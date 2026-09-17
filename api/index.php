@@ -613,13 +613,13 @@ footer strong{color:var(--paper);}
 <script>
 // ---------- module data (easy to extend with new TPs) ----------
 const modules = [
-  {icon:"🌐", bg:"var(--peach)", name:"HTML5 & CSS3", desc:"Structure et mise en forme des pages web.", tps:["TP1 — Page vitrine responsive","TP2 — Formulaire d'inscription stylé"]},
-  {icon:"⚡", bg:"var(--coral)", name:"JavaScript", desc:"Interactivité et logique côté client.", tps:["TP1 — To-do list dynamique","TP2 — Validation de formulaire"]},
-  {icon:"🐘", bg:"var(--rose)", name:"PHP", desc:"Logique serveur et traitement des données.", tps:["TP1 — Formulaire de contact","TP2 — Système de connexion"]},
-  {icon:"🗄️", bg:"var(--peach)", name:"Bases de Données", desc:"Modélisation et requêtes MySQL.", tps:["TP1 — Schéma relationnel","TP2 — Requêtes CRUD"]},
-  {icon:"🔧", bg:"var(--coral)", name:"Git & GitHub", desc:"Versionning et travail collaboratif.", tps:["TP1 — Premier dépôt & commits","TP2 — Branches et pull requests"]},
-  {icon:"🎨", bg:"var(--rose)", name:"UX/UI Design", desc:"Conception d'interfaces centrées utilisateur.", tps:["TP1 — Wireframes basse fidélité","TP2 — Maquette Figma"]},
-  {icon:"🛡️", bg:"var(--peach)", name:"DevOps & Cybersécurité", desc:"Déploiement et bonnes pratiques de sécurité.", tps:["TP1 — Déploiement d'un site simple"]},
+  {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:["Ex 1 - public/docs/ex_App_diagramme_de_class.pdf","TP2 — Formulaire d'inscription stylé"]},
+  {icon:"⚡", bg:"var(--coral)", name:"M202 : Approche agile", desc:"Interactivité et logique côté client.", tps:["TP1 — To-do list dynamique","TP2 — Validation de formulaire"]},
+  {icon:"🐘", bg:"var(--rose)", name:"M203 : Gestion des données", desc:"Logique serveur et traitement des données.", tps:["TP1 — Formulaire de contact","TP2 — Système de connexion"]},
+  {icon:"🗄️", bg:"var(--peach)", name:"M204 : Dev Front-end", desc:"Modélisation et requêtes MySQL.", tps:["TP1 — Schéma relationnel","TP2 — Requêtes CRUD"]},
+  {icon:"🔧", bg:"var(--coral)", name:"M205 : Dev Back-end", desc:"Versionning et travail collaboratif.", tps:["TP1 — Premier dépôt & commits","TP2 — Branches et pull requests"]},
+  {icon:"🎨", bg:"var(--rose)", name:"M206 : Création d'une application cloud native", desc:"Conception d'interfaces centrées utilisateur.", tps:["TP1 — Wireframes basse fidélité","TP2 — Maquette Figma"]},
+  {icon:"🛡️", bg:"var(--peach)", name:"M207 : Projet Fin de Formation", desc:"Déploiement et bonnes pratiques de sécurité.", tps:["TP1 — Déploiement d'un site simple"]},
 ];
 
 const grid = document.getElementById('moduleGrid');
