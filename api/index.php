@@ -613,7 +613,14 @@ footer strong{color:var(--paper);}
 <script>
 // ---------- module data (easy to extend with new TPs) ----------
 const modules = [
-  {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:["Ex 1 - public/docs/ex_App_diagramme_de_class.pdf","TP2 — Formulaire d'inscription stylé"]},
+  {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.",tps: [
+    "Atelier 1 — public/docs/atelier-1-uml.pdf",
+    "Exercice — Diagramme de classes — public/docs/ex-app-diagramme-classe.pdf",
+    "Exercice — Diagramme de cas d'utilisation — public/docs/ex-app-diagramme-use-case.pdf",
+    "TD1 — Diagramme de classes — public/docs/td1-diagramme-classe.pdf",
+    "TD2 — Diagramme de cas d'utilisation — public/docs/td2-diagramme-use-case.pdf",
+    "TD — Diagramme de séquence — public/docs/td-diagramme-sequence.pdf",
+  ],
   {icon:"⚡", bg:"var(--coral)", name:"M202 : Approche agile", desc:"Interactivité et logique côté client.", tps:["TP1 — To-do list dynamique","TP2 — Validation de formulaire"]},
   {icon:"🐘", bg:"var(--rose)", name:"M203 : Gestion des données", desc:"Logique serveur et traitement des données.", tps:["TP1 — Formulaire de contact","TP2 — Système de connexion"]},
   {icon:"🗄️", bg:"var(--peach)", name:"M204 : Dev Front-end", desc:"Modélisation et requêtes MySQL.", tps:["TP1 — Schéma relationnel","TP2 — Requêtes CRUD"]},
