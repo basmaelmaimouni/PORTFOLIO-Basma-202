@@ -281,8 +281,74 @@ nav{
 .tp-item{
   display:flex; align-items:center; gap:9px; font-size:0.85rem; color:var(--ink);
   background:var(--cream); border-radius:9px; padding:8px 11px;
+  cursor:pointer; border:1px solid transparent;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
 }
+.tp-item:hover{background:var(--paper); border-color:var(--line); transform:translateX(3px); box-shadow:var(--shadow-card);}
+.tp-item:focus-visible{outline:2px solid var(--rose); outline-offset:2px;}
 .tp-item .dot{width:6px; height:6px; border-radius:50%; background:var(--rose); flex:none;}
+.tp-item .arrow{margin-left:auto; color:var(--ink-faint); font-size:0.78rem; flex:none; transition:transform .2s ease, color .2s ease;}
+.tp-item:hover .arrow{color:var(--rose); transform:translateX(2px);}
+
+/* ---------- EXERCISE MODAL ---------- */
+.tp-modal-overlay{
+  position:fixed; inset:0; background:rgba(58,42,56,0.55); backdrop-filter:blur(4px);
+  z-index:1000; display:flex; align-items:center; justify-content:center; padding:24px;
+  opacity:0; pointer-events:none; transition:opacity .25s ease;
+}
+.tp-modal-overlay.open{opacity:1; pointer-events:auto;}
+.tp-modal{
+  background:var(--paper); border-radius:var(--radius-lg); max-width:680px; width:100%;
+  max-height:86vh; overflow-y:auto; box-shadow:0 40px 80px -20px rgba(58,42,56,0.5);
+  transform:translateY(18px) scale(0.98); transition:transform .25s ease;
+  border:1px solid var(--line);
+}
+.tp-modal-overlay.open .tp-modal{transform:translateY(0) scale(1);}
+.tp-modal-head{
+  position:sticky; top:0; background:var(--ink); color:var(--paper);
+  padding:24px 30px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+}
+.tp-modal-head .type-badge{
+  font-family:'JetBrains Mono', monospace; font-size:0.72rem; font-weight:600;
+  color:var(--peach); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px; display:block;
+}
+.tp-modal-head h3{color:var(--paper); font-size:1.35rem;}
+.tp-modal-close{
+  background:rgba(255,253,246,0.12); border:none; color:var(--paper); width:32px; height:32px;
+  border-radius:50%; font-size:1.1rem; cursor:pointer; flex:none; line-height:1;
+  display:flex; align-items:center; justify-content:center; transition:background .2s ease;
+}
+.tp-modal-close:hover{background:rgba(255,253,246,0.24);}
+.tp-modal-body{padding:26px 30px 34px;}
+.tp-modal-body .enonce{color:var(--ink-soft); font-size:0.95rem; margin-bottom:22px; line-height:1.65;}
+.tp-modal-body .ex-section{margin-bottom:22px;}
+.tp-modal-body .ex-section:last-child{margin-bottom:0;}
+.tp-modal-body .ex-section h5{
+  font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--rose);
+  text-transform:uppercase; letter-spacing:0.04em; margin-bottom:12px; font-weight:600;
+}
+.tp-modal-body .ex-card{
+  background:var(--cream); border-radius:12px; padding:14px 16px; margin-bottom:10px;
+  border:1px solid var(--line);
+}
+.tp-modal-body .ex-card:last-child{margin-bottom:0;}
+.tp-modal-body .ex-card .ex-name{font-weight:700; font-size:0.95rem; margin-bottom:4px;}
+.tp-modal-body .ex-card .ex-attrs{font-size:0.82rem; color:var(--ink-soft); font-family:'JetBrains Mono', monospace;}
+.tp-modal-body .ex-card .ex-meth{font-size:0.82rem; color:var(--rose); font-family:'JetBrains Mono', monospace; margin-top:3px;}
+.tp-modal-body ul.ex-list{padding-left:0;}
+.tp-modal-body ul.ex-list li{
+  list-style:none; font-size:0.9rem; padding:8px 0; border-bottom:1px dashed var(--line);
+  display:flex; gap:10px;
+}
+.tp-modal-body ul.ex-list li:last-child{border-bottom:none;}
+.tp-modal-body ul.ex-list li .step-num{
+  font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--rose); flex:none; width:22px;
+}
+.tp-modal-body .ex-empty{color:var(--ink-faint); font-size:0.9rem; font-style:italic;}
+@media (max-width:640px){
+  .tp-modal-head{padding:20px 22px;}
+  .tp-modal-body{padding:20px 22px 28px;}
+}
 .tp-add{
   border:1.5px dashed var(--ink-faint); border-radius:9px; padding:8px 11px;
   font-size:0.82rem; color:var(--ink-faint); text-align:center; font-weight:600;
@@ -610,16 +676,193 @@ footer strong{color:var(--paper);}
   Fait avec <strong>♡</strong> et beaucoup de café par <strong>Basma Elmaimouni</strong> — © 2026
 </footer>
 
+<!-- ================= EXERCISE MODAL ================= -->
+<div class="tp-modal-overlay" id="tpModalOverlay">
+  <div class="tp-modal" role="dialog" aria-modal="true" aria-labelledby="tpModalTitle">
+    <div class="tp-modal-head">
+      <div>
+        <span class="type-badge" id="tpModalType">Atelier</span>
+        <h3 id="tpModalTitle">Titre de l'exercice</h3>
+      </div>
+      <button class="tp-modal-close" id="tpModalClose" aria-label="Fermer">✕</button>
+    </div>
+    <div class="tp-modal-body" id="tpModalBody"></div>
+  </div>
+</div>
+
 <script>
+// ---------- exercise content (shown in the modal when a TP is clicked) ----------
+const exercisesData = {
+  "td1-classe-projet": {
+    type:"Diagramme de classes",
+    titre:"Gestion de projets développeurs",
+    enonce:"On souhaite modéliser un système où des développeurs travaillent sur des projets composés de tâches, en s'appuyant sur des IDE (environnements de développement).",
+    sections:[
+      {heading:"Classes", cards:[
+        {name:"developpeur", attrs:"prenom, nom", meth:"travailler(), gererProjet()"},
+        {name:"projet", attrs:"numeroProjet, nomProjet, dateDebut, dateFin", meth:"ajouterTache(), supprimerTache(), afficherProjet()"},
+        {name:"tache", attrs:"numeroTache, nomTache, dateDebut, dateFin", meth:"creerTache(), modifierTache(), afficherTache()"},
+        {name:"IDE", attrs:"numero, libelle, version, licence", meth:"installer(), afficherIDE()"},
+        {name:"participation (classe association)", attrs:"fonction, dateDebut, dateFin", meth:"participer(), modifierParticipation()"},
+      ]},
+      {heading:"Relations / cardinalités", list:[
+        "developpeur ↔ projet : association via la classe-association « participation » (1..*)",
+        "projet 1 — 1..* tache",
+        "developpeur 1..* — 1..* IDE",
+      ]}
+    ]
+  },
+  "td1-classe-academie": {
+    type:"Diagramme de classes",
+    titre:"Gestion académique",
+    enonce:"Modélisation d'une académie regroupant des écoles, elles-mêmes composées de départements, qui gèrent étudiants, enseignants, matières et salles.",
+    sections:[
+      {heading:"Classes", cards:[
+        {name:"Academie", attrs:"nom", meth:"gererEcoles()"},
+        {name:"Ecole", attrs:"siteInternet", meth:"afficherInfo()"},
+        {name:"Departement", attrs:"nom", meth:"calculerMoyenne()"},
+        {name:"Personne (classe mère)", attrs:"nom, prenom, tel, mail", meth:"—"},
+        {name:"Etudiant (hérite de Personne)", attrs:"anneeEntree", meth:"calculerMoyenneGenerale(), afficherMatieresNonNotees()"},
+        {name:"Enseignant (hérite de Personne)", attrs:"datePriseFonction, indice", meth:"imprimerFiche()"},
+        {name:"Evaluation", attrs:"note", meth:"—"},
+        {name:"Matiere", attrs:"nom", meth:"calculerMoyenne()"},
+        {name:"Salle", attrs:"numero, nbPlaces", meth:"—"},
+      ]},
+      {heading:"Relations / cardinalités", list:[
+        "Academie 1 — 1..* Ecole",
+        "Ecole 1 — 1..* Departement",
+        "Departement 1..* — 1..* Etudiant / Enseignant",
+        "Enseignant 1 — 0..* Evaluation, Evaluation 1..* — 1..* Matiere",
+      ]}
+    ]
+  },
+  "td2-uc-salle": {
+    type:"Diagramme de cas d'utilisation",
+    titre:"Réservation de salle",
+    enonce:"Système de réservation de salles utilisable par un employé (recherche, réservation) et un administrateur (gestion des salles et des comptes).",
+    sections:[
+      {heading:"Acteurs", list:["Employé","Administrateur"]},
+      {heading:"Cas d'utilisation", list:[
+        "S'authentifier",
+        "Rechercher une salle",
+        "Consulter la salle « extend » critique",
+        "Réserver / Modifier / Annuler une réservation",
+        "Consulter l'historique « include » authentification",
+        "Gérer les salles (administrateur)",
+        "Gérer les comptes : ajouter, modifier, supprimer (administrateur)",
+      ]}
+    ]
+  },
+  "td2-uc-ebuy": {
+    type:"Diagramme de cas d'utilisation",
+    titre:"Site e-commerce E-Buy",
+    enonce:"Plateforme e-commerce avec un visiteur, un client authentifié, un administrateur, et un système bancaire externe pour le paiement.",
+    sections:[
+      {heading:"Acteurs", list:["Visiteur","Client","Administrateur","Système bancaire (acteur externe)"]},
+      {heading:"Cas d'utilisation", list:[
+        "Créer un compte",
+        "S'authentifier « include » dans plusieurs cas",
+        "Gérer le panier : ajouter au panier, faire une commande",
+        "Valider / annuler la commande",
+        "Payer « include » système bancaire",
+        "Gérer les utilisateurs (admin)",
+        "Gérer le catalogue « extend » : ajouter / modifier / supprimer un produit",
+      ]}
+    ]
+  },
+  "td-sequence-caisse": {
+    type:"Diagramme de séquence",
+    titre:"Paiement en caisse avec coupon de réduction",
+    enonce:"Scénario d'interaction entre un client, un caissier et la banque du client lors d'un paiement en caisse, avec un fragment combiné pour la gestion d'un coupon de réduction.",
+    sections:[
+      {heading:"Acteurs / objets", list:["client","caissier","banque client"]},
+      {heading:"Étapes (fragment « seq coupon de réduction »)", steps:[
+        "signaler fin de vente",
+        "présenter coupon",
+        "recalculer le montant",
+        "demander la méthode de paiement",
+        "entrer le code",
+        "transaction bancaire",
+        "confirmation (ok)",
+        "rendre la monnaie",
+        "payer en cash",
+        "imprimer la facture",
+      ]}
+    ]
+  },
+  "atelier1-agence": {
+    type:"Atelier complet — UML",
+    titre:"Agence immobilière",
+    enonce:"Projet complet de modélisation UML pour une agence immobilière : réservation, désistement, vente et livraison d'appartements, avec validation par un directeur commercial et un avocat.",
+    sections:[
+      {heading:"Diagramme de classes — entités principales", list:[
+        "Société 1 — * Immeuble", "Immeuble 1 — * Appartement", "Immeuble 1 — * Visite",
+        "Client → Acquéreur (spécialisation)", "Reservation, Desistement, Vente (héritent d'Operation)",
+        "Contrat, Lettre des instants (désistement), Promesse de vente",
+        "Avocat et Directeur Commercial : rédiger(), valider Réservation/Désistement/Vente()",
+      ]},
+      {heading:"Diagramme de cas d'utilisation — acteurs", list:[
+        "Acquéreur : réserver appartement, signer promesse de vente, acheter, résilier, avancer, signer",
+        "Directeur Commercial : valider réservation / désistement / vente, rédiger",
+        "Avocat : réaliser désistement, rédiger promesse de vente / lettre de désistement, signer contrat",
+        "Client : consulter les biens, faire des visites, consulter l'historique des visites",
+      ]},
+      {heading:"Diagramme de séquence", list:[
+        "Acquéreur → réserve un appartement → demande signature",
+        "Demande de contrat (description appartement, prix, type de paiement) → « create » Vente",
+      ]},
+      {heading:"Diagramme d'états-transitions (cycle de vie de la vente)", steps:[
+        "En attente de vente → [réserver / payer l'avance, signature promesse] → Réservé",
+        "Réservé → [acheter / prix + mode paiement, signature contrat de vente] → Acheté",
+        "Acheté → [livrer / payer la totalité, remise des clés, signature PV] → Livré (état final)",
+        "Alternative à tout moment : désistement → signature lettre de désistement → fin",
+      ]},
+      {heading:"Diagramme d'activité — désistement", steps:[
+        "Acquéreur : demande d'annulation de vente",
+        "Directeur Commercial : valider le désistement",
+        "Avocat : rédiger la lettre de désistement",
+        "Signature de la lettre par l'Acquéreur et le Directeur Commercial (synchronisation)",
+        "Acquéreur : récupérer l'avance versée",
+      ]},
+    ]
+  }
+};
+
 // ---------- module data (easy to extend with new TPs) ----------
+// each TP is {t: label, k: key into exercisesData (or null if no detail sheet yet)}
 const modules = [
-  {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:["TD 1 - Ex d'app Diagramme de classe","TP2 — Formulaire d'inscription stylé"]},
-  {icon:"⚡", bg:"var(--coral)", name:"M202 : Approche agile", desc:"Interactivité et logique côté client.", tps:["TP1 — To-do list dynamique","TP2 — Validation de formulaire"]},
-  {icon:"🐘", bg:"var(--rose)", name:"M203 : Gestion des données", desc:"Logique serveur et traitement des données.", tps:["TP1 — Formulaire de contact","TP2 — Système de connexion"]},
-  {icon:"🗄️", bg:"var(--peach)", name:"M204 : Dev Front-end", desc:"Modélisation et requêtes MySQL.", tps:["TP1 — Schéma relationnel","TP2 — Requêtes CRUD"]},
-  {icon:"🔧", bg:"var(--coral)", name:"M205 : Dev Back-end", desc:"Versionning et travail collaboratif.", tps:["TP1 — Premier dépôt & commits","TP2 — Branches et pull requests"]},
-  {icon:"🎨", bg:"var(--rose)", name:"M206 : Création d'une application cloud native", desc:"Conception d'interfaces centrées utilisateur.", tps:["TP1 — Wireframes basse fidélité","TP2 — Maquette Figma"]},
-  {icon:"🛡️", bg:"var(--peach)", name:"M207 : Projet Fin de Formation", desc:"Déploiement et bonnes pratiques de sécurité.", tps:["TP1 — Déploiement d'un site simple"]},
+  {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:[
+    {t:"TD1 — Diagramme de classes : gestion de projets développeurs", k:"td1-classe-projet"},
+    {t:"TD1 — Diagramme de classes : gestion académique", k:"td1-classe-academie"},
+    {t:"TD2 — Diagramme de cas d'utilisation : réservation de salle", k:"td2-uc-salle"},
+    {t:"TD2 — Diagramme de cas d'utilisation : site E-Buy", k:"td2-uc-ebuy"},
+    {t:"TD — Diagramme de séquence : paiement en caisse", k:"td-sequence-caisse"},
+    {t:"Atelier 1 — Agence immobilière (projet complet)", k:"atelier1-agence"},
+    {t:"TP2 — Formulaire d'inscription stylé", k:null},
+  ]},
+  {icon:"⚡", bg:"var(--coral)", name:"M202 : Approche agile", desc:"Interactivité et logique côté client.", tps:[
+    {t:"TP1 — To-do list dynamique", k:null},
+    {t:"TP2 — Validation de formulaire", k:null},
+  ]},
+  {icon:"🐘", bg:"var(--rose)", name:"M203 : Gestion des données", desc:"Logique serveur et traitement des données.", tps:[
+    {t:"TP1 — Formulaire de contact", k:null},
+    {t:"TP2 — Système de connexion", k:null},
+  ]},
+  {icon:"🗄️", bg:"var(--peach)", name:"M204 : Dev Front-end", desc:"Modélisation et requêtes MySQL.", tps:[
+    {t:"TP1 — Schéma relationnel", k:null},
+    {t:"TP2 — Requêtes CRUD", k:null},
+  ]},
+  {icon:"🔧", bg:"var(--coral)", name:"M205 : Dev Back-end", desc:"Versionning et travail collaboratif.", tps:[
+    {t:"TP1 — Premier dépôt & commits", k:null},
+    {t:"TP2 — Branches et pull requests", k:null},
+  ]},
+  {icon:"🎨", bg:"var(--rose)", name:"M206 : Création d'une application cloud native", desc:"Conception d'interfaces centrées utilisateur.", tps:[
+    {t:"TP1 — Wireframes basse fidélité", k:null},
+    {t:"TP2 — Maquette Figma", k:null},
+  ]},
+  {icon:"🛡️", bg:"var(--peach)", name:"M207 : Projet Fin de Formation", desc:"Déploiement et bonnes pratiques de sécurité.", tps:[
+    {t:"TP1 — Déploiement d'un site simple", k:null},
+  ]},
 ];
 
 const grid = document.getElementById('moduleGrid');
@@ -632,11 +875,70 @@ grid.innerHTML = modules.map(m => `
     <h4>${m.name}</h4>
     <p>${m.desc}</p>
     <div class="tp-list">
-      ${m.tps.map(t => `<div class="tp-item"><span class="dot"></span>${t}</div>`).join('')}
+      ${m.tps.map(tp => `<div class="tp-item" tabindex="0" role="button" data-key="${tp.k || ''}"><span class="dot"></span>${tp.t}<span class="arrow">→</span></div>`).join('')}
     </div>
     <div class="tp-add">+ Ajouter un nouveau TP</div>
   </div>
 `).join('');
+
+// ---------- exercise modal ----------
+const tpOverlay = document.getElementById('tpModalOverlay');
+const tpModalType = document.getElementById('tpModalType');
+const tpModalTitle = document.getElementById('tpModalTitle');
+const tpModalBody = document.getElementById('tpModalBody');
+const tpModalClose = document.getElementById('tpModalClose');
+
+function renderExerciseBody(ex){
+  if (!ex){
+    return `<p class="ex-empty">Le contenu détaillé de cet atelier n'a pas encore été ajouté. Revenez bientôt ! ✨</p>`;
+  }
+  let html = `<p class="enonce">${ex.enonce}</p>`;
+  ex.sections.forEach(sec => {
+    html += `<div class="ex-section"><h5>${sec.heading}</h5>`;
+    if (sec.cards){
+      html += sec.cards.map(c => `
+        <div class="ex-card">
+          <div class="ex-name">${c.name}</div>
+          <div class="ex-attrs">${c.attrs}</div>
+          <div class="ex-meth">${c.meth}</div>
+        </div>`).join('');
+    } else if (sec.steps){
+      html += `<ul class="ex-list">${sec.steps.map((s,i) => `<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}</ul>`;
+    } else if (sec.list){
+      html += `<ul class="ex-list">${sec.list.map(s => `<li><span class="step-num">•</span><span>${s}</span></li>`).join('')}</ul>`;
+    }
+    html += `</div>`;
+  });
+  return html;
+}
+
+function openExercise(key){
+  const ex = key ? exercisesData[key] : null;
+  tpModalType.textContent = ex ? ex.type : 'Atelier';
+  tpModalTitle.textContent = ex ? ex.titre : 'À venir';
+  tpModalBody.innerHTML = renderExerciseBody(ex);
+  tpOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeExercise(){
+  tpOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+grid.addEventListener('click', (e) => {
+  const item = e.target.closest('.tp-item');
+  if (item) openExercise(item.dataset.key);
+});
+grid.addEventListener('keydown', (e) => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('tp-item')){
+    e.preventDefault();
+    openExercise(e.target.dataset.key);
+  }
+});
+tpModalClose.addEventListener('click', closeExercise);
+tpOverlay.addEventListener('click', (e) => { if (e.target === tpOverlay) closeExercise(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeExercise(); });
 
 // ---------- nav scroll state + scrollspy ----------
 const header = document.getElementById('siteHeader');
