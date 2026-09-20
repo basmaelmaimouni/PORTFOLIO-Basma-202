@@ -298,56 +298,45 @@ nav{
 }
 .tp-modal-overlay.open{opacity:1; pointer-events:auto;}
 .tp-modal{
-  background:var(--paper); border-radius:var(--radius-lg); max-width:680px; width:100%;
-  max-height:86vh; overflow-y:auto; box-shadow:0 40px 80px -20px rgba(58,42,56,0.5);
+  background:var(--paper); border-radius:var(--radius-lg); max-width:900px; width:100%;
+  height:90vh; max-height:900px; overflow:hidden; box-shadow:0 40px 80px -20px rgba(58,42,56,0.5);
   transform:translateY(18px) scale(0.98); transition:transform .25s ease;
   border:1px solid var(--line);
+  display:flex; flex-direction:column;
 }
 .tp-modal-overlay.open .tp-modal{transform:translateY(0) scale(1);}
 .tp-modal-head{
-  position:sticky; top:0; background:var(--ink); color:var(--paper);
-  padding:24px 30px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+  background:var(--ink); color:var(--paper); flex:none;
+  padding:18px 26px; display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
 }
 .tp-modal-head .type-badge{
   font-family:'JetBrains Mono', monospace; font-size:0.72rem; font-weight:600;
-  color:var(--peach); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px; display:block;
+  color:var(--peach); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px; display:block;
 }
-.tp-modal-head h3{color:var(--paper); font-size:1.35rem;}
+.tp-modal-head h3{color:var(--paper); font-size:1.2rem;}
+.tp-modal-head-actions{display:flex; align-items:center; gap:10px; flex:none;}
+.tp-modal-open-tab{
+  font-family:'Plus Jakarta Sans', sans-serif; font-size:0.8rem; font-weight:700;
+  background:rgba(255,253,246,0.14); color:var(--paper); border:1px solid rgba(255,253,246,0.25);
+  padding:8px 14px; border-radius:100px; white-space:nowrap; transition:background .2s ease;
+}
+.tp-modal-open-tab:hover{background:rgba(255,253,246,0.26);}
 .tp-modal-close{
   background:rgba(255,253,246,0.12); border:none; color:var(--paper); width:32px; height:32px;
   border-radius:50%; font-size:1.1rem; cursor:pointer; flex:none; line-height:1;
   display:flex; align-items:center; justify-content:center; transition:background .2s ease;
 }
 .tp-modal-close:hover{background:rgba(255,253,246,0.24);}
-.tp-modal-body{padding:26px 30px 34px;}
-.tp-modal-body .enonce{color:var(--ink-soft); font-size:0.95rem; margin-bottom:22px; line-height:1.65;}
-.tp-modal-body .ex-section{margin-bottom:22px;}
-.tp-modal-body .ex-section:last-child{margin-bottom:0;}
-.tp-modal-body .ex-section h5{
-  font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--rose);
-  text-transform:uppercase; letter-spacing:0.04em; margin-bottom:12px; font-weight:600;
+.tp-modal-body{flex:1; min-height:0; background:var(--ink-faint); position:relative;}
+.tp-modal-body iframe{width:100%; height:100%; border:none; display:block; background:var(--paper);}
+.tp-modal-body .ex-empty{
+  color:var(--ink-soft); font-size:0.95rem; font-style:italic; text-align:center;
+  padding:60px 30px; background:var(--paper); height:100%;
 }
-.tp-modal-body .ex-card{
-  background:var(--cream); border-radius:12px; padding:14px 16px; margin-bottom:10px;
-  border:1px solid var(--line);
-}
-.tp-modal-body .ex-card:last-child{margin-bottom:0;}
-.tp-modal-body .ex-card .ex-name{font-weight:700; font-size:0.95rem; margin-bottom:4px;}
-.tp-modal-body .ex-card .ex-attrs{font-size:0.82rem; color:var(--ink-soft); font-family:'JetBrains Mono', monospace;}
-.tp-modal-body .ex-card .ex-meth{font-size:0.82rem; color:var(--rose); font-family:'JetBrains Mono', monospace; margin-top:3px;}
-.tp-modal-body ul.ex-list{padding-left:0;}
-.tp-modal-body ul.ex-list li{
-  list-style:none; font-size:0.9rem; padding:8px 0; border-bottom:1px dashed var(--line);
-  display:flex; gap:10px;
-}
-.tp-modal-body ul.ex-list li:last-child{border-bottom:none;}
-.tp-modal-body ul.ex-list li .step-num{
-  font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--rose); flex:none; width:22px;
-}
-.tp-modal-body .ex-empty{color:var(--ink-faint); font-size:0.9rem; font-style:italic;}
 @media (max-width:640px){
-  .tp-modal-head{padding:20px 22px;}
-  .tp-modal-body{padding:20px 22px 28px;}
+  .tp-modal{height:94vh;}
+  .tp-modal-head{padding:16px 18px; flex-wrap:wrap;}
+  .tp-modal-open-tab{padding:7px 12px; font-size:0.75rem;}
 }
 .tp-add{
   border:1.5px dashed var(--ink-faint); border-radius:9px; padding:8px 11px;
@@ -684,7 +673,10 @@ footer strong{color:var(--paper);}
         <span class="type-badge" id="tpModalType">Atelier</span>
         <h3 id="tpModalTitle">Titre de l'exercice</h3>
       </div>
-      <button class="tp-modal-close" id="tpModalClose" aria-label="Fermer">✕</button>
+      <div class="tp-modal-head-actions">
+        <a class="tp-modal-open-tab" id="tpModalOpenTab" href="#" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet ↗</a>
+        <button class="tp-modal-close" id="tpModalClose" aria-label="Fermer">✕</button>
+      </div>
     </div>
     <div class="tp-modal-body" id="tpModalBody"></div>
   </div>
@@ -692,144 +684,48 @@ footer strong{color:var(--paper);}
 
 <script>
 // ---------- exercise content (shown in the modal when a TP is clicked) ----------
-const exercisesData = {
+// ---------- PDF library: each TP links to the real PDF handed in by the teacher ----------
+// path is relative to this index.php file — keep the /docs folder next to it.
+const pdfData = {
   "td1-classe-projet": {
     type:"Diagramme de classes",
     titre:"Gestion de projets développeurs",
-    enonce:"On souhaite modéliser un système où des développeurs travaillent sur des projets composés de tâches, en s'appuyant sur des IDE (environnements de développement).",
-    sections:[
-      {heading:"Classes", cards:[
-        {name:"developpeur", attrs:"prenom, nom", meth:"travailler(), gererProjet()"},
-        {name:"projet", attrs:"numeroProjet, nomProjet, dateDebut, dateFin", meth:"ajouterTache(), supprimerTache(), afficherProjet()"},
-        {name:"tache", attrs:"numeroTache, nomTache, dateDebut, dateFin", meth:"creerTache(), modifierTache(), afficherTache()"},
-        {name:"IDE", attrs:"numero, libelle, version, licence", meth:"installer(), afficherIDE()"},
-        {name:"participation (classe association)", attrs:"fonction, dateDebut, dateFin", meth:"participer(), modifierParticipation()"},
-      ]},
-      {heading:"Relations / cardinalités", list:[
-        "developpeur ↔ projet : association via la classe-association « participation » (1..*)",
-        "projet 1 — 1..* tache",
-        "developpeur 1..* — 1..* IDE",
-      ]}
-    ]
+    file:"docs/TD1-diagramme-de-classe.pdf"
   },
   "td1-classe-academie": {
     type:"Diagramme de classes",
     titre:"Gestion académique",
-    enonce:"Modélisation d'une académie regroupant des écoles, elles-mêmes composées de départements, qui gèrent étudiants, enseignants, matières et salles.",
-    sections:[
-      {heading:"Classes", cards:[
-        {name:"Academie", attrs:"nom", meth:"gererEcoles()"},
-        {name:"Ecole", attrs:"siteInternet", meth:"afficherInfo()"},
-        {name:"Departement", attrs:"nom", meth:"calculerMoyenne()"},
-        {name:"Personne (classe mère)", attrs:"nom, prenom, tel, mail", meth:"—"},
-        {name:"Etudiant (hérite de Personne)", attrs:"anneeEntree", meth:"calculerMoyenneGenerale(), afficherMatieresNonNotees()"},
-        {name:"Enseignant (hérite de Personne)", attrs:"datePriseFonction, indice", meth:"imprimerFiche()"},
-        {name:"Evaluation", attrs:"note", meth:"—"},
-        {name:"Matiere", attrs:"nom", meth:"calculerMoyenne()"},
-        {name:"Salle", attrs:"numero, nbPlaces", meth:"—"},
-      ]},
-      {heading:"Relations / cardinalités", list:[
-        "Academie 1 — 1..* Ecole",
-        "Ecole 1 — 1..* Departement",
-        "Departement 1..* — 1..* Etudiant / Enseignant",
-        "Enseignant 1 — 0..* Evaluation, Evaluation 1..* — 1..* Matiere",
-      ]}
-    ]
+    file:"docs/TD1-diagramme-de-classe.pdf"
   },
   "td2-uc-salle": {
     type:"Diagramme de cas d'utilisation",
     titre:"Réservation de salle",
-    enonce:"Système de réservation de salles utilisable par un employé (recherche, réservation) et un administrateur (gestion des salles et des comptes).",
-    sections:[
-      {heading:"Acteurs", list:["Employé","Administrateur"]},
-      {heading:"Cas d'utilisation", list:[
-        "S'authentifier",
-        "Rechercher une salle",
-        "Consulter la salle « extend » critique",
-        "Réserver / Modifier / Annuler une réservation",
-        "Consulter l'historique « include » authentification",
-        "Gérer les salles (administrateur)",
-        "Gérer les comptes : ajouter, modifier, supprimer (administrateur)",
-      ]}
-    ]
+    file:"docs/TD2-diagramme-cas-utilisation.pdf"
   },
   "td2-uc-ebuy": {
     type:"Diagramme de cas d'utilisation",
     titre:"Site e-commerce E-Buy",
-    enonce:"Plateforme e-commerce avec un visiteur, un client authentifié, un administrateur, et un système bancaire externe pour le paiement.",
-    sections:[
-      {heading:"Acteurs", list:["Visiteur","Client","Administrateur","Système bancaire (acteur externe)"]},
-      {heading:"Cas d'utilisation", list:[
-        "Créer un compte",
-        "S'authentifier « include » dans plusieurs cas",
-        "Gérer le panier : ajouter au panier, faire une commande",
-        "Valider / annuler la commande",
-        "Payer « include » système bancaire",
-        "Gérer les utilisateurs (admin)",
-        "Gérer le catalogue « extend » : ajouter / modifier / supprimer un produit",
-      ]}
-    ]
+    file:"docs/ex-App-diagramme-use-case-ebuy.pdf"
   },
   "td-sequence-caisse": {
     type:"Diagramme de séquence",
-    titre:"Paiement en caisse avec coupon de réduction",
-    enonce:"Scénario d'interaction entre un client, un caissier et la banque du client lors d'un paiement en caisse, avec un fragment combiné pour la gestion d'un coupon de réduction.",
-    sections:[
-      {heading:"Acteurs / objets", list:["client","caissier","banque client"]},
-      {heading:"Étapes (fragment « seq coupon de réduction »)", steps:[
-        "signaler fin de vente",
-        "présenter coupon",
-        "recalculer le montant",
-        "demander la méthode de paiement",
-        "entrer le code",
-        "transaction bancaire",
-        "confirmation (ok)",
-        "rendre la monnaie",
-        "payer en cash",
-        "imprimer la facture",
-      ]}
-    ]
+    titre:"Paiement en caisse avec coupon",
+    file:"docs/TD-diagramme-de-sequence.pdf"
   },
   "atelier1-agence": {
     type:"Atelier complet — UML",
     titre:"Agence immobilière",
-    enonce:"Projet complet de modélisation UML pour une agence immobilière : réservation, désistement, vente et livraison d'appartements, avec validation par un directeur commercial et un avocat.",
-    sections:[
-      {heading:"Diagramme de classes — entités principales", list:[
-        "Société 1 — * Immeuble", "Immeuble 1 — * Appartement", "Immeuble 1 — * Visite",
-        "Client → Acquéreur (spécialisation)", "Reservation, Desistement, Vente (héritent d'Operation)",
-        "Contrat, Lettre des instants (désistement), Promesse de vente",
-        "Avocat et Directeur Commercial : rédiger(), valider Réservation/Désistement/Vente()",
-      ]},
-      {heading:"Diagramme de cas d'utilisation — acteurs", list:[
-        "Acquéreur : réserver appartement, signer promesse de vente, acheter, résilier, avancer, signer",
-        "Directeur Commercial : valider réservation / désistement / vente, rédiger",
-        "Avocat : réaliser désistement, rédiger promesse de vente / lettre de désistement, signer contrat",
-        "Client : consulter les biens, faire des visites, consulter l'historique des visites",
-      ]},
-      {heading:"Diagramme de séquence", list:[
-        "Acquéreur → réserve un appartement → demande signature",
-        "Demande de contrat (description appartement, prix, type de paiement) → « create » Vente",
-      ]},
-      {heading:"Diagramme d'états-transitions (cycle de vie de la vente)", steps:[
-        "En attente de vente → [réserver / payer l'avance, signature promesse] → Réservé",
-        "Réservé → [acheter / prix + mode paiement, signature contrat de vente] → Acheté",
-        "Acheté → [livrer / payer la totalité, remise des clés, signature PV] → Livré (état final)",
-        "Alternative à tout moment : désistement → signature lettre de désistement → fin",
-      ]},
-      {heading:"Diagramme d'activité — désistement", steps:[
-        "Acquéreur : demande d'annulation de vente",
-        "Directeur Commercial : valider le désistement",
-        "Avocat : rédiger la lettre de désistement",
-        "Signature de la lettre par l'Acquéreur et le Directeur Commercial (synchronisation)",
-        "Acquéreur : récupérer l'avance versée",
-      ]},
-    ]
-  }
+    file:"docs/Atelier-1-agence-immobiliere.pdf"
+  },
+  "ex-classe-academie": {
+    type:"Exercice — Diagramme de classes",
+    titre:"Application : gestion académique",
+    file:"docs/ex-App-diagramme-de-classe.pdf"
+  },
 };
 
 // ---------- module data (easy to extend with new TPs) ----------
-// each TP is {t: label, k: key into exercisesData (or null if no detail sheet yet)}
+// each TP is {t: label, k: key into pdfData (or null if no PDF has been added yet)}
 const modules = [
   {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:[
     {t:"TD1 — Diagramme de classes : gestion de projets développeurs", k:"td1-classe-projet"},
@@ -838,6 +734,7 @@ const modules = [
     {t:"TD2 — Diagramme de cas d'utilisation : site E-Buy", k:"td2-uc-ebuy"},
     {t:"TD — Diagramme de séquence : paiement en caisse", k:"td-sequence-caisse"},
     {t:"Atelier 1 — Agence immobilière (projet complet)", k:"atelier1-agence"},
+    {t:"Exercice application — gestion académique", k:"ex-classe-academie"},
     {t:"TP2 — Formulaire d'inscription stylé", k:null},
   ]},
   {icon:"⚡", bg:"var(--coral)", name:"M202 : Approche agile", desc:"Interactivité et logique côté client.", tps:[
@@ -881,42 +778,29 @@ grid.innerHTML = modules.map(m => `
   </div>
 `).join('');
 
-// ---------- exercise modal ----------
+// ---------- exercise modal (opens the real PDF inline) ----------
 const tpOverlay = document.getElementById('tpModalOverlay');
 const tpModalType = document.getElementById('tpModalType');
 const tpModalTitle = document.getElementById('tpModalTitle');
 const tpModalBody = document.getElementById('tpModalBody');
 const tpModalClose = document.getElementById('tpModalClose');
-
-function renderExerciseBody(ex){
-  if (!ex){
-    return `<p class="ex-empty">Le contenu détaillé de cet atelier n'a pas encore été ajouté. Revenez bientôt ! ✨</p>`;
-  }
-  let html = `<p class="enonce">${ex.enonce}</p>`;
-  ex.sections.forEach(sec => {
-    html += `<div class="ex-section"><h5>${sec.heading}</h5>`;
-    if (sec.cards){
-      html += sec.cards.map(c => `
-        <div class="ex-card">
-          <div class="ex-name">${c.name}</div>
-          <div class="ex-attrs">${c.attrs}</div>
-          <div class="ex-meth">${c.meth}</div>
-        </div>`).join('');
-    } else if (sec.steps){
-      html += `<ul class="ex-list">${sec.steps.map((s,i) => `<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}</ul>`;
-    } else if (sec.list){
-      html += `<ul class="ex-list">${sec.list.map(s => `<li><span class="step-num">•</span><span>${s}</span></li>`).join('')}</ul>`;
-    }
-    html += `</div>`;
-  });
-  return html;
-}
+const tpModalOpenTab = document.getElementById('tpModalOpenTab');
 
 function openExercise(key){
-  const ex = key ? exercisesData[key] : null;
+  const ex = key ? pdfData[key] : null;
   tpModalType.textContent = ex ? ex.type : 'Atelier';
   tpModalTitle.textContent = ex ? ex.titre : 'À venir';
-  tpModalBody.innerHTML = renderExerciseBody(ex);
+
+  if (ex){
+    tpModalOpenTab.href = ex.file;
+    tpModalOpenTab.style.display = 'inline-flex';
+    // #toolbar=0 hides the PDF viewer's own toolbar for a cleaner embed on browsers that support it
+    tpModalBody.innerHTML = `<iframe src="${ex.file}#toolbar=0" title="${ex.titre}"></iframe>`;
+  } else {
+    tpModalOpenTab.style.display = 'none';
+    tpModalBody.innerHTML = `<p class="ex-empty">Le PDF de cet atelier n'a pas encore été ajouté au dossier <code>docs/</code>. Revenez bientôt ! ✨</p>`;
+  }
+
   tpOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -924,6 +808,7 @@ function openExercise(key){
 function closeExercise(){
   tpOverlay.classList.remove('open');
   document.body.style.overflow = '';
+  tpModalBody.innerHTML = ''; // stop the PDF loading/playing once closed
 }
 
 grid.addEventListener('click', (e) => {
@@ -940,65 +825,6 @@ tpModalClose.addEventListener('click', closeExercise);
 tpOverlay.addEventListener('click', (e) => { if (e.target === tpOverlay) closeExercise(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeExercise(); });
 
-// ---------- nav scroll state + scrollspy ----------
-const header = document.getElementById('siteHeader');
-const navLinks = document.querySelectorAll('.nav-link');
-const sections = document.querySelectorAll('section[id]');
-
-window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 20);
-  let current = '';
-  sections.forEach(sec => {
-    const top = sec.offsetTop - 140;
-    if (window.scrollY >= top) current = sec.id;
-  });
-  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-}, {passive:true});
-
-// mobile nav toggle
-const navToggle = document.getElementById('navToggle');
-const navLinksEl = document.getElementById('navLinks');
-navToggle.addEventListener('click', () => navLinksEl.classList.toggle('open'));
-navLinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinksEl.classList.remove('open')));
-
-// ---------- reveal on scroll ----------
-const revealEls = document.querySelectorAll('.reveal');
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting){
-      entry.target.classList.add('is-visible');
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, {threshold:0.15});
-revealEls.forEach(el => revealObserver.observe(el));
-
-// re-observe dynamically injected module cards
-document.querySelectorAll('#moduleGrid .reveal').forEach(el => revealObserver.observe(el));
-
-// ---------- skill bars fill on view ----------
-const skillObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting){
-      entry.target.style.width = entry.target.dataset.w + '%';
-      skillObserver.unobserve(entry.target);
-    }
-  });
-}, {threshold:0.4});
-document.querySelectorAll('.skill-fill').forEach(el => skillObserver.observe(el));
-
-// ---------- hero typing animation ----------
-const typedEl = document.getElementById('typed-line');
-const fullText = 'console.log("Rêve · Code · Réalise");';
-let i = 0;
-function typeChar(){
-  if (i <= fullText.length){
-    typedEl.textContent = fullText.slice(0, i);
-    i++;
-    setTimeout(typeChar, 42);
-  }
-}
-setTimeout(typeChar, 700);
 </script>
 </body>
 </html>
