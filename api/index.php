@@ -653,11 +653,9 @@ footer strong{color:var(--paper);}
       <h3>Discutons de votre prochain projet</h3>
       <p>Ouverte aux stages, collaborations et opportunités en développement web full-stack. N'hésitez pas à m'écrire !</p>
       <div class="contact-list">
-        <a href="mailto:basmaelmaimouni6@gmail.com"><span class="ico">✉</span> basma.elmaimouni@gmail.com</a>
-        <a href="https://github.com/basma-elmaimouni" target="_blank" rel="noopener"><span class="ico">⌥</span> github.com/basma-elmaimouni</a>
-        <a href="https://linkedin.com/in/www.linkedin.com/in/
-basma-el-maimouni-b38a26395
-" target="_blank" rel="noopener"><span class="ico">in</span> linkedin.com/in/basma-elmaimouni</a>
+        <a href="mailto:basmaelmaimouni6@gmail.com"><span class="ico">✉</span> basmaelmaimouni6@gmail.com</a>
+        <a href="https://github.com/basma-elmaimouni" target="_blank" rel="noopener"><span class="ico">⌥</span> github.com/Basma Elmaimouni</a>
+        <a href="https://linkedin.com/in/www.linkedin.com/in/basma-el-maimouni-b38a26395" target="_blank" rel="noopener"><span class="ico">in</span> linkedin.com/in/Basma Elmaimouni</a>
         <a href="#"><span class="ico">📍</span> Tanger, Maroc</a>
       </div>
     </div>
