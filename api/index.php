@@ -587,7 +587,7 @@ footer strong{color:var(--paper);}
           <p>Site vitrine personnel construit en HTML, CSS et PHP — avec formulaire de contact fonctionnel et structure de fichiers organisée (assets, css, js, php).</p>
           <div class="tech-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span></div>
           <div class="project-links">
-            <a href="#">Code source →</a>
+            <a href="/docs/Atelier Figma-1.pdf">Code source →</a>
             <a href="#">Voir le site →</a>
           </div>
         </div>
