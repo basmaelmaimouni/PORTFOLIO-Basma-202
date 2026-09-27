@@ -688,257 +688,63 @@ footer strong{color:var(--paper);}
     </div>
     <div class="tp-modal-body" id="tpModalBody"></div>
   </div>
-</div>
-
+/div>
 <script>
-// ---------- exercise content (shown in the modal when a TP is clicked) ----------
-const exercisesData = {
-  "td1-classe-projet": {
-    type:"Diagramme de classes",
-    titre:"Gestion de projets développeurs",
-    enonce:"On souhaite modéliser un système où des développeurs travaillent sur des projets composés de tâches, en s'appuyant sur des IDE (environnements de développement).",
-    sections:[
-      {heading:"Classes", cards:[
-        {name:"developpeur", attrs:"prenom, nom", meth:"travailler(), gererProjet()"},
-        {name:"projet", attrs:"numeroProjet, nomProjet, dateDebut, dateFin", meth:"ajouterTache(), supprimerTache(), afficherProjet()"},
-        {name:"tache", attrs:"numeroTache, nomTache, dateDebut, dateFin", meth:"creerTache(), modifierTache(), afficherTache()"},
-        {name:"IDE", attrs:"numero, libelle, version, licence", meth:"installer(), afficherIDE()"},
-        {name:"participation (classe association)", attrs:"fonction, dateDebut, dateFin", meth:"participer(), modifierParticipation()"},
-      ]},
-      {heading:"Relations / cardinalités", list:[
-        "developpeur ↔ projet : association via la classe-association « participation » (1..*)",
-        "projet 1 — 1..* tache",
-        "developpeur 1..* — 1..* IDE",
-      ]}
-    ]
-  },
-  "td1-classe-academie": {
-    type:"Diagramme de classes",
-    titre:"Gestion académique",
-    enonce:"Modélisation d'une académie regroupant des écoles, elles-mêmes composées de départements, qui gèrent étudiants, enseignants, matières et salles.",
-    sections:[
-      {heading:"Classes", cards:[
-        {name:"Academie", attrs:"nom", meth:"gererEcoles()"},
-        {name:"Ecole", attrs:"siteInternet", meth:"afficherInfo()"},
-        {name:"Departement", attrs:"nom", meth:"calculerMoyenne()"},
-        {name:"Personne (classe mère)", attrs:"nom, prenom, tel, mail", meth:"—"},
-        {name:"Etudiant (hérite de Personne)", attrs:"anneeEntree", meth:"calculerMoyenneGenerale(), afficherMatieresNonNotees()"},
-        {name:"Enseignant (hérite de Personne)", attrs:"datePriseFonction, indice", meth:"imprimerFiche()"},
-        {name:"Evaluation", attrs:"note", meth:"—"},
-        {name:"Matiere", attrs:"nom", meth:"calculerMoyenne()"},
-        {name:"Salle", attrs:"numero, nbPlaces", meth:"—"},
-      ]},
-      {heading:"Relations / cardinalités", list:[
-        "Academie 1 — 1..* Ecole",
-        "Ecole 1 — 1..* Departement",
-        "Departement 1..* — 1..* Etudiant / Enseignant",
-        "Enseignant 1 — 0..* Evaluation, Evaluation 1..* — 1..* Matiere",
-      ]}
-    ]
-  },
-  "td2-uc-salle": {
-    type:"Diagramme de cas d'utilisation",
-    titre:"Réservation de salle",
-    enonce:"Système de réservation de salles utilisable par un employé (recherche, réservation) et un administrateur (gestion des salles et des comptes).",
-    sections:[
-      {heading:"Acteurs", list:["Employé","Administrateur"]},
-      {heading:"Cas d'utilisation", list:[
-        "S'authentifier",
-        "Rechercher une salle",
-        "Consulter la salle « extend » critique",
-        "Réserver / Modifier / Annuler une réservation",
-        "Consulter l'historique « include » authentification",
-        "Gérer les salles (administrateur)",
-        "Gérer les comptes : ajouter, modifier, supprimer (administrateur)",
-      ]}
-    ]
-  },
-  "td2-uc-ebuy": {
-    type:"Diagramme de cas d'utilisation",
-    titre:"Site e-commerce E-Buy",
-    enonce:"Plateforme e-commerce avec un visiteur, un client authentifié, un administrateur, et un système bancaire externe pour le paiement.",
-    sections:[
-      {heading:"Acteurs", list:["Visiteur","Client","Administrateur","Système bancaire (acteur externe)"]},
-      {heading:"Cas d'utilisation", list:[
-        "Créer un compte",
-        "S'authentifier « include » dans plusieurs cas",
-        "Gérer le panier : ajouter au panier, faire une commande",
-        "Valider / annuler la commande",
-        "Payer « include » système bancaire",
-        "Gérer les utilisateurs (admin)",
-        "Gérer le catalogue « extend » : ajouter / modifier / supprimer un produit",
-      ]}
-    ]
-  },
-  "td-sequence-caisse": {
-    type:"Diagramme de séquence",
-    titre:"Paiement en caisse avec coupon de réduction",
-    enonce:"Scénario d'interaction entre un client, un caissier et la banque du client lors d'un paiement en caisse, avec un fragment combiné pour la gestion d'un coupon de réduction.",
-    sections:[
-      {heading:"Acteurs / objets", list:["client","caissier","banque client"]},
-      {heading:"Étapes (fragment « seq coupon de réduction »)", steps:[
-        "signaler fin de vente",
-        "présenter coupon",
-        "recalculer le montant",
-        "demander la méthode de paiement",
-        "entrer le code",
-        "transaction bancaire",
-        "confirmation (ok)",
-        "rendre la monnaie",
-        "payer en cash",
-        "imprimer la facture",
-      ]}
-    ]
-  },
-  "atelier1-agence": {
-    type:"Atelier complet — UML",
-    titre:"Agence immobilière",
-    enonce:"Projet complet de modélisation UML pour une agence immobilière : réservation, désistement, vente et livraison d'appartements, avec validation par un directeur commercial et un avocat.",
-    sections:[
-      {heading:"Diagramme de classes — entités principales", list:[
-        "Société 1 — * Immeuble", "Immeuble 1 — * Appartement", "Immeuble 1 — * Visite",
-        "Client → Acquéreur (spécialisation)", "Reservation, Desistement, Vente (héritent d'Operation)",
-        "Contrat, Lettre des instants (désistement), Promesse de vente",
-        "Avocat et Directeur Commercial : rédiger(), valider Réservation/Désistement/Vente()",
-      ]},
-      {heading:"Diagramme de cas d'utilisation — acteurs", list:[
-        "Acquéreur : réserver appartement, signer promesse de vente, acheter, résilier, avancer, signer",
-        "Directeur Commercial : valider réservation / désistement / vente, rédiger",
-        "Avocat : réaliser désistement, rédiger promesse de vente / lettre de désistement, signer contrat",
-        "Client : consulter les biens, faire des visites, consulter l'historique des visites",
-      ]},
-      {heading:"Diagramme de séquence", list:[
-        "Acquéreur → réserve un appartement → demande signature",
-        "Demande de contrat (description appartement, prix, type de paiement) → « create » Vente",
-      ]},
-      {heading:"Diagramme d'états-transitions (cycle de vie de la vente)", steps:[
-        "En attente de vente → [réserver / payer l'avance, signature promesse] → Réservé",
-        "Réservé → [acheter / prix + mode paiement, signature contrat de vente] → Acheté",
-        "Acheté → [livrer / payer la totalité, remise des clés, signature PV] → Livré (état final)",
-        "Alternative à tout moment : désistement → signature lettre de désistement → fin",
-      ]},
-      {heading:"Diagramme d'activité — désistement", steps:[
-        "Acquéreur : demande d'annulation de vente",
-        "Directeur Commercial : valider le désistement",
-        "Avocat : rédiger la lettre de désistement",
-        "Signature de la lettre par l'Acquéreur et le Directeur Commercial (synchronisation)",
-        "Acquéreur : récupérer l'avance versée",
-      ]},
-    ]
-  }
-};
+  // ---------- render dynamic cards / items ----------
+function renderExerciseCards() {
+  grid.innerHTML = '';
+  
+  Object.keys(exercisesData).forEach(key => {
+    const ex = exercisesData[key];
+    const card = document.createElement('div');
+    card.className = 'tp-item reveal';
+    card.dataset.key = key;
+    
+    // حدّد المسار ديال ملف الـ PDF من البيانات ولا عمل مسار افتراضي
+    const pdfPath = ex.pdf || docs/${key}.pdf;
 
-// ---------- module data (easy to extend with new TPs) ----------
-// each TP is {t: label, k: key into exercisesData (or null if no detail sheet yet)}
-const modules = [
-  {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:[
-    {t:"TD1 — Diagramme de classes : gestion de projets développeurs", k:"td1-classe-projet"},
-    {t:"TD1 — Diagramme de classes : gestion académique", k:"td1-classe-academie"},
-    {t:"TD2 — Diagramme de cas d'utilisation : réservation de salle", k:"td2-uc-salle"},
-    {t:"TD2 — Diagramme de cas d'utilisation : site E-Buy", k:"td2-uc-ebuy"},
-    {t:"TD — Diagramme de séquence : paiement en caisse", k:"td-sequence-caisse"},
-    {t:"Atelier 1 — Agence immobilière (projet complet)", k:"atelier1-agence"},
-    {t:"TP2 — Formulaire d'inscription stylé", k:null},
-  ]},
-  {icon:"⚡", bg:"var(--coral)", name:"M202 : Approche agile", desc:"Interactivité et logique côté client.", tps:[
-    {t:"TP1 — To-do list dynamique", k:null},
-    {t:"TP2 — Validation de formulaire", k:null},
-  ]},
-  {icon:"🐘", bg:"var(--rose)", name:"M203 : Gestion des données", desc:"Logique serveur et traitement des données.", tps:[
-    {t:"TP1 — Formulaire de contact", k:null},
-    {t:"TP2 — Système de connexion", k:null},
-  ]},
-  {icon:"🗄️", bg:"var(--peach)", name:"M204 : Dev Front-end", desc:"Modélisation et requêtes MySQL.", tps:[
-    {t:"TP1 — Schéma relationnel", k:null},
-    {t:"TP2 — Requêtes CRUD", k:null},
-  ]},
-  {icon:"🔧", bg:"var(--coral)", name:"M205 : Dev Back-end", desc:"Versionning et travail collaboratif.", tps:[
-    {t:"TP1 — Premier dépôt & commits", k:null},
-    {t:"TP2 — Branches et pull requests", k:null},
-  ]},
-  {icon:"🎨", bg:"var(--rose)", name:"M206 : Création d'une application cloud native", desc:"Conception d'interfaces centrées utilisateur.", tps:[
-    {t:"TP1 — Wireframes basse fidélité", k:null},
-    {t:"TP2 — Maquette Figma", k:null},
-  ]},
-  {icon:"🛡️", bg:"var(--peach)", name:"M207 : Projet Fin de Formation", desc:"Déploiement et bonnes pratiques de sécurité.", tps:[
-    {t:"TP1 — Déploiement d'un site simple", k:null},
-  ]},
-];
+    card.innerHTML = 
+      <div class="tp-card-content">
+        <span class="tp-badge">${ex.type || 'Atelier'}</span>
+        <h3>${ex.titre || 'Exercice'}</h3>
+        <p>${ex.description || 'Cliquez pour ouvrir le fichier PDF.'}</p>
+        <a href="${pdfPath}" target="_blank" class="tp-btn-pdf" rel="noopener noreferrer">
+          Voir le PDF
+        </a>
+      </div>
+    ;
 
-const grid = document.getElementById('moduleGrid');
-grid.innerHTML = modules.map(m => `
-  <div class="module-card reveal">
-    <div class="module-top">
-      <div class="module-icon" style="background:${m.bg};">${m.icon}</div>
-      <div class="tp-count">${m.tps.length} TP${m.tps.length>1?'s':''}</div>
-    </div>
-    <h4>${m.name}</h4>
-    <p>${m.desc}</p>
-    <div class="tp-list">
-      ${m.tps.map(tp => `<div class="tp-item" tabindex="0" role="button" data-key="${tp.k || ''}"><span class="dot"></span>${tp.t}<span class="arrow">→</span></div>`).join('')}
-    </div>
-    <div class="tp-add">+ Ajouter un nouveau TP</div>
-  </div>
-`).join('');
-
-// ---------- exercise modal ----------
-const tpOverlay = document.getElementById('tpModalOverlay');
-const tpModalType = document.getElementById('tpModalType');
-const tpModalTitle = document.getElementById('tpModalTitle');
-const tpModalBody = document.getElementById('tpModalBody');
-const tpModalClose = document.getElementById('tpModalClose');
-
-function renderExerciseBody(ex){
-  if (!ex){
-    return `<p class="ex-empty">Le contenu détaillé de cet atelier n'a pas encore été ajouté. Revenez bientôt ! ✨</p>`;
-  }
-  let html = `<p class="enonce">${ex.enonce}</p>`;
-  ex.sections.forEach(sec => {
-    html += `<div class="ex-section"><h5>${sec.heading}</h5>`;
-    if (sec.cards){
-      html += sec.cards.map(c => `
-        <div class="ex-card">
-          <div class="ex-name">${c.name}</div>
-          <div class="ex-attrs">${c.attrs}</div>
-          <div class="ex-meth">${c.meth}</div>
-        </div>`).join('');
-    } else if (sec.steps){
-      html += `<ul class="ex-list">${sec.steps.map((s,i) => `<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}</ul>`;
-    } else if (sec.list){
-      html += `<ul class="ex-list">${sec.list.map(s => `<li><span class="step-num">•</span><span>${s}</span></li>`).join('')}</ul>`;
-    }
-    html += `</div>`;
+    grid.appendChild(card);
+    if (typeof revealObserver !== 'undefined') revealObserver.observe(card);
   });
-  return html;
 }
 
-function openExercise(key){
+// ---------- open PDF directly on click ----------
+function openExercise(key) {
   const ex = key ? exercisesData[key] : null;
-  tpModalType.textContent = ex ? ex.type : 'Atelier';
-  tpModalTitle.textContent = ex ? ex.titre : 'À venir';
-  tpModalBody.innerHTML = renderExerciseBody(ex);
-  tpOverlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
+  if (!ex) return;
 
-function closeExercise(){
-  tpOverlay.classList.remove('open');
-  document.body.style.overflow = '';
+  // فتح ملف الـ PDF مباشرة فـ tab جديد
+  const pdfPath = ex.pdf || docs/${key}.pdf;
+  window.open(pdfPath, '_blank', 'noopener,noreferrer');
 }
 
 grid.addEventListener('click', (e) => {
   const item = e.target.closest('.tp-item');
-  if (item) openExercise(item.dataset.key);
+  if (item) {
+    // إلا كليكا على الزر كيتفتح نيشان، وإلا كليكا فشي بلاصة فـ الكارد كيتفتح بالفانكشن
+    if (!e.target.closest('.tp-btn-pdf')) {
+      openExercise(item.dataset.key);
+    }
+  }
 });
+
 grid.addEventListener('keydown', (e) => {
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('tp-item')){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('tp-item')) {
     e.preventDefault();
     openExercise(e.target.dataset.key);
   }
 });
-tpModalClose.addEventListener('click', closeExercise);
-tpOverlay.addEventListener('click', (e) => { if (e.target === tpOverlay) closeExercise(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeExercise(); });
 
 // ---------- nav scroll state + scrollspy ----------
 const header = document.getElementById('siteHeader');
@@ -946,31 +752,33 @@ const navLinks = document.querySelectorAll('.nav-link');
 const sections = document.querySelectorAll('section[id]');
 
 window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 20);
+  if (header) header.classList.toggle('scrolled', window.scrollY > 20);
   let current = '';
   sections.forEach(sec => {
     const top = sec.offsetTop - 140;
     if (window.scrollY >= top) current = sec.id;
   });
   navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-}, {passive:true});
+}, { passive: true });
 
 // mobile nav toggle
 const navToggle = document.getElementById('navToggle');
 const navLinksEl = document.getElementById('navLinks');
-navToggle.addEventListener('click', () => navLinksEl.classList.toggle('open'));
-navLinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinksEl.classList.remove('open')));
+if (navToggle && navLinksEl) {
+  navToggle.addEventListener('click', () => navLinksEl.classList.toggle('open'));
+  navLinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinksEl.classList.remove('open')));
+}
 
 // ---------- reveal on scroll ----------
 const revealEls = document.querySelectorAll('.reveal');
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting){
+    if (entry.isIntersecting) {
       entry.target.classList.add('is-visible');
       revealObserver.unobserve(entry.target);
     }
   });
-}, {threshold:0.15});
+}, { threshold: 0.15 });
 revealEls.forEach(el => revealObserver.observe(el));
 
 // re-observe dynamically injected module cards
@@ -979,26 +787,27 @@ document.querySelectorAll('#moduleGrid .reveal').forEach(el => revealObserver.ob
 // ---------- skill bars fill on view ----------
 const skillObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting){
+    if (entry.isIntersecting) {
       entry.target.style.width = entry.target.dataset.w + '%';
       skillObserver.unobserve(entry.target);
     }
   });
-}, {threshold:0.4});
+}, { threshold: 0.4 });
 document.querySelectorAll('.skill-fill').forEach(el => skillObserver.observe(el));
 
 // ---------- hero typing animation ----------
 const typedEl = document.getElementById('typed-line');
 const fullText = 'console.log("Rêve · Code · Réalise");';
 let i = 0;
-function typeChar(){
-  if (i <= fullText.length){
+function typeChar() {
+  if (typedEl && i <= fullText.length) {
     typedEl.textContent = fullText.slice(0, i);
     i++;
     setTimeout(typeChar, 42);
   }
 }
-setTimeout(typeChar, 700);
+if (typedEl) setTimeout(typeChar, 700);
 </script>
+
 </body>
 </html>
