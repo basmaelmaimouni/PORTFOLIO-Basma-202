@@ -832,7 +832,7 @@ const exercisesData = {
 // each TP is {t: label, k: key into exercisesData (or null if no detail sheet yet)}
 const modules = [
   {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:[
-    {t:"TD1 — Diagramme de classes" : }{pdf : "/docs/TD1_diagramme_de_class.pdf"},
+    {t:"TD1 — Diagramme de classes : gestion de projets développeurs", k:"td1-classe-projet"},
     {t:"TD1 — Diagramme de classes : gestion académique", k:"td1-classe-academie"},
     {t:"TD2 — Diagramme de cas d'utilisation : réservation de salle", k:"td2-uc-salle"},
     {t:"TD2 — Diagramme de cas d'utilisation : site E-Buy", k:"td2-uc-ebuy"},
