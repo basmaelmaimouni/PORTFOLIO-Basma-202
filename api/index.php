@@ -587,7 +587,7 @@ footer strong{color:var(--paper);}
           <p>Site vitrine personnel construit en HTML, CSS et PHP — avec formulaire de contact fonctionnel et structure de fichiers organisée (assets, css, js, php).</p>
           <div class="tech-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span></div>
           <div class="project-links">
-            <a href="/docs/Atelier Figma-1.pdf">Code source →</a>
+            <a href="#">Code source →</a>
             <a href="#">Voir le site →</a>
           </div>
         </div>
@@ -606,12 +606,12 @@ footer strong{color:var(--paper);}
           </div>
         </div>
         <div class="project-body">
-          <h4>Gestion de Bibliothèque</h4>
+          <h4>Acheto (Rapport)</h4>
           <p>Application PHP/MySQL de gestion d'emprunts : ajout, recherche et suivi des livres, avec authentification simple et interface d'administration.</p>
           <div class="tech-tags"><span>PHP</span><span>MySQL</span><span>Bootstrap</span><span>Git</span></div>
           <div class="project-links">
-            <a href="#">Code source →</a>
-            <a href="#">Démo →</a>
+            <a href="/docs/Acheto.pdf">Code source →</a>
+            <a href="/docs/Acheto.pdf">Démo →</a>
           </div>
         </div>
       </div>
@@ -832,7 +832,7 @@ const exercisesData = {
 // each TP is {t: label, k: key into exercisesData (or null if no detail sheet yet)}
 const modules = [
   {icon:"🌐", bg:"var(--peach)", name:"M201 : Préparer un projet web", desc:"Structure et mise en forme des pages web.", tps:[
-    {t:"TD1 — Diagramme de classes : gestion de projets développeurs", k:"td1-classe-projet"},
+    {t:"TD1 — Diagramme de classes" : }{pdf : "/docs/TD1_diagramme_de_class.pdf"},
     {t:"TD1 — Diagramme de classes : gestion académique", k:"td1-classe-academie"},
     {t:"TD2 — Diagramme de cas d'utilisation : réservation de salle", k:"td2-uc-salle"},
     {t:"TD2 — Diagramme de cas d'utilisation : site E-Buy", k:"td2-uc-ebuy"},
