@@ -292,10 +292,21 @@ function openProj(i){
   show();$('mid').textContent='PROJET';$('mt').textContent=PROJ[i][0];
   $('tabs').style.display='none';render(PF['P'+i]);
 }
+
 function render(f){
-  $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div><button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a></div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
+  $('list').innerHTML = f.length
+    ? f.map((x,i) => `
+      <div class="file" style="animation-delay:${i*.05}s">
+        <span>📄 ${esc(x.name)}</span>
+        <div>
+          <a href="${x.url}" target="_blank">Voir</a>
+          <a href="${x.url}" download>Télécharger</a>
+        </div>
+      </div>
+    `).join('')
+    : '<div class="empty">Aucun fichier pour le moment 📭</div>';
 }
-function prev(u){$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
+
 document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
 
 // typing
