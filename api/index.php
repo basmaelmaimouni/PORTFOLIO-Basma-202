@@ -1,7 +1,7 @@
 <?php
 /* ================== CONFIG (بدّل غير هنا) ================== */
 // المسارات: على Vercel كيتخدم public/ من الجذر (/docs/...)، وفاللوكال (XAMPP) كيتخدم ../public
-$onVercel = (bool) getenv('VERCEL');
+$onVercel = getenv('VERCEL') || getenv('VERCEL_ENV') || !is_dir(__DIR__.'/../public');
 $fs  = realpath(__DIR__.'/../public') ?: (__DIR__.'/public');
 $url = $onVercel ? '' : (is_dir(__DIR__.'/../public') ? '../public' : 'public');
 $me = [
@@ -10,8 +10,8 @@ $me = [
   'typing'  => ['Développeuse Full Stack', 'Passionné par le Web', 'Créatif & Curieux'],
   'about'   => "Étudiante en 2ème année Développement Digital option Full Stack. J'aime transformer des idées en applications web modernes, propres et performantes. Ce portfolio regroupe mes ateliers, TDs et projets réalisés durant l'année.",
   'email'   => 'basmaelmaimouni6@gmail.com',
-  'github'  => 'https://github.com/karim',
-  'linkedin'=> 'https://linkedin.com/in/karim',
+  'github'  => 'https://github.com/basma',
+  'linkedin'=> 'https://linkedin.com/in/basma',
   'photo'   => $url.'/images/'.rawurlencode('Basma.jpeg'),          // تصويرتك لفوق (Hero)
   'about_photo' => $url.'/images/'.rawurlencode('about basma.jpeg'),        // تصويرة About me
 ];
@@ -29,70 +29,74 @@ $projects = [
   ['Acheto', 'Projet Acheto : présentation, objectifs et fonctionnalités principales.', ['PHP','MySQL','JS'], 'https://github.com/karim/projet1', 'docs/projets/acheto'],
   ['Projet fin formation', 'Projet de fin de formation Full Stack : conception et réalisation complète de l’application.', ['HTML','CSS','JS'], 'https://github.com/karim/projet2', 'docs/projets/projet-fin-formation'],
 ];
-/* ============ الهيكل ديال الملفات (كيتقرا أوتوماتيك) ============
-   public/docs/m-201/UML/*.pdf      public/docs/m-201/Figma/*.pdf
-   public/docs/m-202/WaterFall/Atelier.../*.pdf
-   - كل دوسي داخل m-XXX = درس (UML, Figma...) وكيبان بزر
-   - ملف سميتو أو دوسيه فيه "atelier" => Ateliers | فيه "projet" => Projets | الباقي => TD
-   public/docs/projets/acheto/*.pdf   public/docs/projets/projet-fin-formation/*.pdf
-   public/images/Basma.jpeg   public/images/about basma.jpeg
-================================================ */
-function scanPdfs($dir, $rel, $deep = true){
-  $o = [];
-  if (!is_dir($dir)) return $o;
-  $it = $deep ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS))
-              : new FilesystemIterator($dir, FilesystemIterator::SKIP_DOTS);
-  foreach ($it as $f) {
-    if (!$f->isFile() || strtolower($f->getExtension()) !== 'pdf') continue;
-    $sub  = str_replace('\\', '/', substr($f->getPathname(), strlen($dir) + 1));
-    $type = stripos($sub, 'atelier') !== false ? 'ateliers' : (stripos($sub, 'projet') !== false ? 'projets' : 'td');
-    $o[] = ['name' => ucfirst(trim(preg_replace('/[_\-]+/', ' ', $f->getBasename('.'.$f->getExtension())))),
-            'url'  => implode('/', array_map('rawurlencode', explode('/', "$rel/$sub"))), 'type' => $type];
-  }
-  usort($o, fn($a, $b) => strnatcasecmp($a['name'], $b['name']));
-  return $o;
-}
-function groupTypes($files){
-  $t = [];
-  foreach (['td', 'ateliers', 'projets'] as $k) {
-    $l = array_values(array_filter($files, fn($f) => $f['type'] === $k));
-    if ($l) $t[$k] = array_map(fn($f) => ['name' => $f['name'], 'url' => $f['url']], $l);
-  }
-  return $t;
-}
-function scanAll($fs, $modules, $projects){
-  $data = [];
-  foreach ($modules as $id => $m) {
-    $mod = 'm-'.substr($id, 1); $dir = "$fs/docs/$mod"; $rel = "docs/$mod";
-    $data[$id] = [];
-    $dirs = glob("$dir/*", GLOB_ONLYDIR) ?: [];
-    natcasesort($dirs);
-    foreach ($dirs as $d) { $n = basename($d); $data[$id][] = ['label' => $n, 'types' => groupTypes(scanPdfs($d, "$rel/$n"))]; }
-    $loose = groupTypes(scanPdfs($dir, $rel, false));
-    if ($loose) $data[$id][] = ['label' => '', 'types' => $loose];
-    if (!$data[$id]) $data[$id][] = ['label' => '', 'types' => []];
-  }
-  $pf = [];
-  foreach ($projects as $i => $p)
-    $pf["P$i"] = array_map(fn($f) => ['name' => $f['name'], 'url' => $f['url']], scanPdfs("$fs/".$p[4], $p[4]));
-  return [$data, $pf];
-}
+/* ===================== كتب هنا الملفات ديالك ديريكت =====================
+   كل ملف: ['السمية اللي كتبان فالموقع', 'الطريق']
+   الطريق كيبدا من docs/  (بلا public/)  وكيفما كاين بالضبط فالـ dossier:
+     public/docs/m-201/Figma/Atelier Figma-1.pdf   ==>   'docs/m-201/Figma/Atelier Figma-1.pdf'
+   ⚠ على Vercel الحروف الكبيرة والصغيرة مهمين: Figma ≠ figma  /  m-201 ≠ M-201
+   الأنواع: 'td' | 'ateliers' | 'projets'
+   ================================================================== */
+$files = [
+  'M201' => [
+    'Figma' => [
+      'ateliers' => [
+        ['Atelier Figma 1', 'public/docs/m-201/Figma/Atelier Figma-1.pdf'],
+        ['Atelier Figma 2', 'public/docs/m-201/Figma/Atelier Figma-2.pdf'],
+        ['Atelier 3 Figma', 'public/docs/m-201/Figma/Atelier-3 Figma.pdf'],
+      ],
+    ],
+    'UML' => [
+      'td' => [
+        // بدّل ... بالسمية الكاملة ديال الملف وحيّد //
+         ['Ex App diagramme 1',  'public/docs/m-201/UML/ex_App_diagramme_de_class.pdf'],
+         ['Ex App diagramme 2',  'public/docs/m-201/UML/ex_App_diagramme_use_case.pdf'],
+         ['TD Diagramme',        'public/docs/m-201/UML/TD_Diagramme_de_séquance.pdf'],
+         ['TD1 Diagramme',       'public/docs/m-201/UML/TD1_diagramme_de_class.pdf'],
+         ['TD2 Diagramme',       'public/docs/m-201/UML/TD2_diagramme_use_case.pdf'],
+      ],
+      'ateliers' => [
+        ['Atelier 1', 'docs/m-201/UML/Atelier 1.pdf'],
+      ],
+    ],
+  ],
+  'M202' => [
+    'WaterFall' => [
+      'ateliers' => [
+       ['Exercices', 'docs/m-202/WaterFall/Atelier 1/EXERCICES.pdf'],
+      ],
+    ],
+  ],
+  'M203' => [],
+  'M204' => [],
+  'M205' => [],
+  'M206' => [],
+];
+// ملفات المشروعين: 0 = Acheto ، 1 = Projet fin formation
+$projectFiles = [
+  0 => [
+    // ['Rapport Acheto', 'docs/projets/acheto/rapport.pdf'],
+  ],
+  1 => [
+    // ['Rapport projet fin formation', 'docs/projets/projet-fin-formation/rapport.pdf'],
+  ],
+];
+/* ================== من هنا لتحت ما تقيسش والو ================== */
+function mkUrl($path){ global $url; return $url.'/'.implode('/', array_map('rawurlencode', explode('/', $path))); }
+function mkList($l){ return array_map(fn($f) => ['name' => $f[0], 'url' => mkUrl($f[1])], $l); }
 function cnt($d, $t){ $n = 0; foreach ($d as $p) $n += count($p['types'][$t] ?? []); return $n; }
 function tagsOf($d){ $l = array_filter(array_column($d, 'label')); return $l ?: ['TD', 'Ateliers', 'Projets']; }
-
-// محليا: كيسكانّي الملفات وكيحفظ manifest.php. على Vercel: كيقرا manifest.php (حيت PHP ما كيشوفش public/)
-$manifest = __DIR__.'/manifest.php';
-if (!$onVercel && is_dir("$fs/docs")) {
-  [$data, $pfiles] = scanAll($fs, $modules, $projects);
-  @file_put_contents($manifest, "<?php\nreturn ".var_export([$data, $pfiles], true).";\n");
-} elseif (is_file($manifest)) {
-  [$data, $pfiles] = include $manifest;
-} else {
-  [$data, $pfiles] = scanAll($fs, $modules, $projects);
+$data = [];
+foreach ($modules as $id => $m) {
+  $data[$id] = [];
+  foreach (($files[$id] ?? []) as $label => $types) {
+    $t = [];
+    foreach (['td', 'ateliers', 'projets'] as $k) if (!empty($types[$k])) $t[$k] = mkList($types[$k]);
+    $data[$id][] = ['label' => $label, 'types' => $t];
+  }
+  if (!$data[$id]) $data[$id][] = ['label' => '', 'types' => []];
 }
-$pre = fn($l) => array_map(fn($f) => ['name' => $f['name'], 'url' => "$url/".$f['url']], $l);
-foreach ($data as $id => $ps) foreach ($ps as $i => $pt) foreach ($pt['types'] as $k => $l) $data[$id][$i]['types'][$k] = $pre($l);
-foreach ($pfiles as $k => $l) $pfiles[$k] = $pre($l);
+$pfiles = [];
+foreach ($projects as $i => $p) $pfiles["P$i"] = mkList($projectFiles[$i] ?? []);
 $h = fn($s) => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
