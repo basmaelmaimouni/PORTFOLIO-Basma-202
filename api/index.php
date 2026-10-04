@@ -48,11 +48,11 @@ $files = [
     'UML' => [
       'td' => [
         // بدّل ... بالسمية الكاملة ديال الملف وحيّد //
-        // ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
-        // ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
-        // ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_s....pdf'],
-        // ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_....pdf'],
-        // ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use....pdf'],
+         ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
+         ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
+         ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_s....pdf'],
+         ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_....pdf'],
+         ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use....pdf'],
       ],
       'ateliers' => [
         ['Atelier 1', 'docs/m-201/UML/Atelier 1.pdf'],
@@ -62,7 +62,7 @@ $files = [
   'M202' => [
     'WaterFall' => [
       'ateliers' => [
-        // ['Exercices', 'docs/m-202/WaterFall/Atelier..../EXERCICES.pdf'],
+         ['Exercices', 'docs/m-202/WaterFall/Atelier..../EXERCICES.pdf'],
       ],
     ],
   ],
