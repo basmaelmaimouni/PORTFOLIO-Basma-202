@@ -1,1831 +1,316 @@
-
 <?php
-
-/* =========================================================
-   Basma Elmaimouni - PORTFOLIO
-   Développement Digital - 2ème année
-   ========================================================= */
-// Les 6 modules
-$modules = [
-    "m201" => [
-        "code" => "M201",
-        "title" => "Préparation du projet web",
-        "icon" => "🌐",
-        "description" => "Conception et préparation des projets web."
-    ],
-
-    "m202" => [
-        "code" => "M202",
-        "title" => "Approche agile",
-        "icon" => "⚡",
-        "description" => "Méthodes agiles, organisation et gestion de projet."
-    ],
-
-    "m203" => [
-        "code" => "M203",
-        "title" => "Gestion de données",
-        "icon" => "🗄️",
-        "description" => "Bases de données, SQL et gestion des données."
-    ],
-
-    "m204" => [
-        "code" => "M204",
-        "title" => "Développement front-end",
-        "icon" => "💻",
-        "description" => "Création d'interfaces web modernes et interactives."
-    ],
-
-    "m205" => [
-        "code" => "M205",
-        "title" => "Développement back-end",
-        "icon" => "⚙️",
-        "description" => "PHP, programmation serveur et développement back-end."
-    ],
-
-    "m206" => [
-        "code" => "M206",
-        "title" => "Création d'une application Cloud Native",
-        "icon" => "☁️",
-        "description" => "Découverte des applications Cloud Native et du déploiement."
-    ]
+/* ================== CONFIG (بدّل غير هنا) ================== */
+// المسارات: على Vercel كيتخدم public/ من الجذر (/docs/...)، وفاللوكال (XAMPP) كيتخدم ../public
+$onVercel = (bool) getenv('VERCEL');
+$fs  = realpath(__DIR__.'/../public') ?: (__DIR__.'/public');
+$url = $onVercel ? '' : (is_dir(__DIR__.'/../public') ? '../public' : 'public');
+$me = [
+  'name'    => 'Basma Elmaimouni',                       // سميتك
+  'role'    => 'Développeuse Full Stack',
+  'typing'  => ['Développeuse Full Stack', 'Passionné par le Web', 'Créatif & Curieux'],
+  'about'   => "Étudiante en 2ème année Développement Digital option Full Stack. J'aime transformer des idées en applications web modernes, propres et performantes. Ce portfolio regroupe mes ateliers, TDs et projets réalisés durant l'année.",
+  'email'   => 'basmaelmaimouni6@gmail.com',
+  'github'  => 'https://github.com/karim',
+  'linkedin'=> 'https://linkedin.com/in/karim',
+  'photo'   => $url.'/images/'.rawurlencode('Basma.jpeg'),          // تصويرتك لفوق (Hero)
+  'about_photo' => $url.'/images/'.rawurlencode('about basma.jpeg'),        // تصويرة About me
 ];
-
-
-/* =========================================================
-   Récupérer automatiquement les PDF de chaque module
-   ========================================================= */
-
-/* =========================================================
-   Récupérer automatiquement les dossiers et PDF
-   ========================================================= */
-
-function getDocuments($module)
-{
-    /*
-     * Le code fonctionne avec la structure :
-     * public/docs/m201/UML/Atelier1/TD1.pdf
-     * public/docs/m201/FIGMA/Atelier1/TD1.pdf
-     * etc.
-     */
-
-    $possibleFolders = [
-        __DIR__ . "/../public/docs/" . $module,   // api/index.php → public/docs
-        __DIR__ . "/public/docs/" . $module,      // index.php à la racine
-        __DIR__ . "/docs/" . $module,             // docs à côté de index.php
-    ];
-
-    $folder = null;
-
-    foreach ($possibleFolders as $possibleFolder) {
-        if (is_dir($possibleFolder)) {
-            $folder = $possibleFolder;
-            break;
-        }
-    }
-
-    if ($folder === null) {
-        return [];
-    }
-
-    return scanFolder($folder);
+// سميات المودولات (بدّلها بالسميات الحقيقية)
+$modules = [
+  'M201' => ['Préparation d\'un projet web', '📋'],
+  'M202' => ['Approche Agile', '🔄'],
+  'M203' => ['Gestion des données', '🗄️'],
+  'M204' => ['Développement front-end', '🎨'],
+  'M205' => ['Développement back-end', '⚙️'],
+  'M206' => ['Création d\'une application cloud native', '☁️'],
+];
+// المشروعين
+$projects = [
+  ['Acheto', 'Projet Acheto : présentation, objectifs et fonctionnalités principales.', ['PHP','MySQL','JS'], 'https://github.com/karim/projet1', 'docs/projets/acheto'],
+  ['Projet fin formation', 'Projet de fin de formation Full Stack : conception et réalisation complète de l’application.', ['HTML','CSS','JS'], 'https://github.com/karim/projet2', 'docs/projets/projet-fin-formation'],
+];
+/* ============ الهيكل ديال الملفات (كيتقرا أوتوماتيك) ============
+   public/docs/m-201/UML/*.pdf      public/docs/m-201/Figma/*.pdf
+   public/docs/m-202/WaterFall/Atelier.../*.pdf
+   - كل دوسي داخل m-XXX = درس (UML, Figma...) وكيبان بزر
+   - ملف سميتو أو دوسيه فيه "atelier" => Ateliers | فيه "projet" => Projets | الباقي => TD
+   public/docs/projets/acheto/*.pdf   public/docs/projets/projet-fin-formation/*.pdf
+   public/images/Basma.jpeg   public/images/about basma.jpeg
+================================================ */
+function scanPdfs($dir, $rel, $deep = true){
+  $o = [];
+  if (!is_dir($dir)) return $o;
+  $it = $deep ? new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS))
+              : new FilesystemIterator($dir, FilesystemIterator::SKIP_DOTS);
+  foreach ($it as $f) {
+    if (!$f->isFile() || strtolower($f->getExtension()) !== 'pdf') continue;
+    $sub  = str_replace('\\', '/', substr($f->getPathname(), strlen($dir) + 1));
+    $type = stripos($sub, 'atelier') !== false ? 'ateliers' : (stripos($sub, 'projet') !== false ? 'projets' : 'td');
+    $o[] = ['name' => ucfirst(trim(preg_replace('/[_\-]+/', ' ', $f->getBasename('.'.$f->getExtension())))),
+            'url'  => implode('/', array_map('rawurlencode', explode('/', "$rel/$sub"))), 'type' => $type];
+  }
+  usort($o, fn($a, $b) => strnatcasecmp($a['name'], $b['name']));
+  return $o;
 }
-
-
-/* =========================================================
-   Scanner les dossiers récursivement
-   ========================================================= */
-
-function scanFolder($folder)
-{
-    $items = [];
-
-    if (!is_dir($folder)) {
-        return $items;
-    }
-
-    $files = scandir($folder);
-
-    foreach ($files as $file) {
-
-        if ($file === "." || $file === ".." || $file === ".gitkeep") {
-            continue;
-        }
-
-        $fullPath = $folder . DIRECTORY_SEPARATOR . $file;
-
-        /* Dossier */
-        if (is_dir($fullPath)) {
-
-            $items[] = [
-                "type" => "folder",
-                "name" => $file,
-                "children" => scanFolder($fullPath)
-            ];
-
-        /* Fichier PDF */
-        } else {
-
-            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-
-            if ($extension === "pdf") {
-
-                $items[] = [
-                    "type" => "file",
-                    "name" => pathinfo($file, PATHINFO_FILENAME),
-                    "file" => $file
-                ];
-            }
-        }
-    }
-
-    return $items;
+function groupTypes($files){
+  $t = [];
+  foreach (['td', 'ateliers', 'projets'] as $k) {
+    $l = array_values(array_filter($files, fn($f) => $f['type'] === $k));
+    if ($l) $t[$k] = array_map(fn($f) => ['name' => $f['name'], 'url' => $f['url']], $l);
+  }
+  return $t;
 }
-
-
-/* =========================================================
-   Compter tous les PDF, même dans les sous-dossiers
-   ========================================================= */
-
-function countDocuments($items)
-{
-    $count = 0;
-
-    foreach ($items as $item) {
-
-        if ($item["type"] === "file") {
-            $count++;
-        } elseif ($item["type"] === "folder") {
-            $count += countDocuments($item["children"]);
-        }
-    }
-
-    return $count;
+function scanAll($fs, $modules, $projects){
+  $data = [];
+  foreach ($modules as $id => $m) {
+    $mod = 'm-'.substr($id, 1); $dir = "$fs/docs/$mod"; $rel = "docs/$mod";
+    $data[$id] = [];
+    $dirs = glob("$dir/*", GLOB_ONLYDIR) ?: [];
+    natcasesort($dirs);
+    foreach ($dirs as $d) { $n = basename($d); $data[$id][] = ['label' => $n, 'types' => groupTypes(scanPdfs($d, "$rel/$n"))]; }
+    $loose = groupTypes(scanPdfs($dir, $rel, false));
+    if ($loose) $data[$id][] = ['label' => '', 'types' => $loose];
+    if (!$data[$id]) $data[$id][] = ['label' => '', 'types' => []];
+  }
+  $pf = [];
+  foreach ($projects as $i => $p)
+    $pf["P$i"] = array_map(fn($f) => ['name' => $f['name'], 'url' => $f['url']], scanPdfs("$fs/".$p[4], $p[4]));
+  return [$data, $pf];
 }
+function cnt($d, $t){ $n = 0; foreach ($d as $p) $n += count($p['types'][$t] ?? []); return $n; }
+function tagsOf($d){ $l = array_filter(array_column($d, 'label')); return $l ?: ['TD', 'Ateliers', 'Projets']; }
 
-
-/* =========================================================
-   Créer l'URL d'un PDF
-   ========================================================= */
-
-// function documentUrl($module, $relativePath)
-// {
-//     $scriptDirectory = str_replace(
-//         "\\",
-//         "/",
-//         dirname($_SERVER["SCRIPT_NAME"] ?? "")
-//     );
-
-//     /*
-//      * Si index.php est dans /api :
-//      * ../public/docs/...
-//      * Sinon :
-//      * public/docs/...
-//      */
-//     if (basename($scriptDirectory) === "api") {
-//         $base = "../public/docs";
-//     } else {
-//         $base = "public/docs";
-//     }
-
-//     $parts = explode("/", trim($relativePath, "/"));
-//     $encodedParts = [];
-
-//     foreach ($parts as $part) {
-//         $encodedParts[] = rawurlencode($part);
-//     }
-
-
-//     return $base . "/" . rawurlencode($module) . "/" . implode("/", $encodedParts);
-// }
-function documentUrl($module, $relativePath)
-{
-    $parts = explode("/", trim($relativePath, "/"));
-    $encodedParts = [];
-
-    foreach ($parts as $part) {
-        $encodedParts[] = rawurlencode($part);
-    }
-
-    // Chemin absolu depuis la racine du site
-    return "/docs/" . rawurlencode($module) . "/" . implode("/", $encodedParts);
+// محليا: كيسكانّي الملفات وكيحفظ manifest.php. على Vercel: كيقرا manifest.php (حيت PHP ما كيشوفش public/)
+$manifest = __DIR__.'/manifest.php';
+if (!$onVercel && is_dir("$fs/docs")) {
+  [$data, $pfiles] = scanAll($fs, $modules, $projects);
+  @file_put_contents($manifest, "<?php\nreturn ".var_export([$data, $pfiles], true).";\n");
+} elseif (is_file($manifest)) {
+  [$data, $pfiles] = include $manifest;
+} else {
+  [$data, $pfiles] = scanAll($fs, $modules, $projects);
 }
-
-/* =========================================================
-   Afficher les dossiers et PDF automatiquement
-   ========================================================= */
-
-$folderCounter = 0;
-
-function renderDocuments($items, $module, $relativePath = "", $level = 0)
-{
-    global $folderCounter;
-
-    if (empty($items)) {
-        return;
-    }
-
-    foreach ($items as $item) {
-
-        if ($item["type"] === "folder") {
-
-            $folderPath = $relativePath === ""
-                ? $item["name"]
-                : $relativePath . "/" . $item["name"];
-
-            $folderId = "folder_" . (++$folderCounter);
-
-            echo '<div class="document-folder level-' . $level . '">';
-
-            echo '<button type="button" class="folder-title"';
-            echo ' onclick="toggleFolder(\'' . $folderId . '\', this)"';
-            echo ' aria-expanded="false"';
-            echo ' aria-controls="' . $folderId . '">';
-            echo '<span class="folder-arrow">▶</span>';
-            echo '<span>' . ($level === 0 ? "📁 " : "📂 ");
-            echo htmlspecialchars($item["name"]);
-            echo '</span>';
-            echo '</button>';
-
-            echo '<div id="' . $folderId . '" class="folder-content">';
-
-            if (!empty($item["children"])) {
-                renderDocuments(
-                    $item["children"],
-                    $module,
-                    $folderPath,
-                    $level + 1
-                );
-            } else {
-                echo '<div class="empty-folder">Aucun document pour le moment.</div>';
-            }
-
-            echo '</div>';
-            echo '</div>';
-
-        } else {
-
-            $filePath = $relativePath === ""
-                ? $item["file"]
-                : $relativePath . "/" . $item["file"];
-
-            $url = documentUrl($module, $filePath);
-
-            echo '<a href="' . htmlspecialchars($url) . '"';
-            echo ' target="_blank"';
-            echo ' class="document">';
-            echo '📄 ' . htmlspecialchars($item["name"]);
-            echo '</a>';
-        }
-    }
-}
-
-
-/* =========================================================
-   Compter les documents
-   ========================================================= */
-
-$totalDocuments = 0;
-
-foreach ($modules as $key => $module) {
-
-    $modules[$key]["documents"] = getDocuments($key);
-    $modules[$key]["count"] = countDocuments($modules[$key]["documents"]);
-
-    $totalDocuments += $modules[$key]["count"];
-}
-
+$pre = fn($l) => array_map(fn($f) => ['name' => $f['name'], 'url' => "$url/".$f['url']], $l);
+foreach ($data as $id => $ps) foreach ($ps as $i => $pt) foreach ($pt['types'] as $k => $l) $data[$id][$i]['types'][$k] = $pre($l);
+foreach ($pfiles as $k => $l) $pfiles[$k] = $pre($l);
+$h = fn($s) => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-          content="Portfolio professionnel de Oumaima Elharti, étudiante en Développement Digital.">
-
-    <title>Basma Elmaimouni | Développeuse Web</title>
-
-
-    <style>
-
-        /* =====================================================
-           RESET
-           ===================================================== */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #080b16;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
-
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-
-        /* =====================================================
-           BACKGROUND
-           ===================================================== */
-
-        body::before {
-            content: "";
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            background: #7c3aed;
-            filter: blur(180px);
-            opacity: .18;
-            border-radius: 50%;
-            top: -200px;
-            left: -150px;
-            z-index: -2;
-            animation: moveGlow 8s infinite alternate ease-in-out;
-        }
-
-
-        body::after {
-            content: "";
-            position: fixed;
-            width: 450px;
-            height: 450px;
-            background: #06b6d4;
-            filter: blur(180px);
-            opacity: .13;
-            border-radius: 50%;
-            bottom: -150px;
-            right: -100px;
-            z-index: -2;
-            animation: moveGlow2 10s infinite alternate ease-in-out;
-        }
-
-
-        @keyframes moveGlow {
-
-            from {
-                transform: translate(0, 0);
-            }
-
-            to {
-                transform: translate(180px, 100px);
-            }
-        }
-
-
-        @keyframes moveGlow2 {
-
-            from {
-                transform: translate(0, 0);
-            }
-
-            to {
-                transform: translate(-150px, -100px);
-            }
-        }
-
-
-        /* =====================================================
-           NAVBAR
-           ===================================================== */
-
-        nav {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: min(1100px, 92%);
-            padding: 15px 25px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            background: rgba(10, 14, 30, .72);
-            backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 18px;
-
-            z-index: 1000;
-
-            animation: navDown 1s ease;
-        }
-
-
-        @keyframes navDown {
-
-            from {
-                opacity: 0;
-                transform: translate(-50%, -40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-
-        .logo {
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-
-        .logo span {
-            color: #8b5cf6;
-        }
-
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            list-style: none;
-        }
-
-
-        .nav-links a {
-            color: #cbd5e1;
-            font-size: 14px;
-            transition: .3s;
-            position: relative;
-        }
-
-
-        .nav-links a::after {
-            content: "";
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background: #8b5cf6;
-            bottom: -7px;
-            left: 50%;
-            transition: .3s;
-        }
-
-
-        .nav-links a:hover {
-            color: white;
-        }
-
-
-        .nav-links a:hover::after {
-            width: 100%;
-            left: 0;
-        }
-
-
-        /* =====================================================
-           HERO
-           ===================================================== */
-
-        .hero {
-            min-height: 100vh;
-            max-width: 1150px;
-            margin: auto;
-
-            padding: 140px 30px 80px;
-
-            display: grid;
-            grid-template-columns: 1.1fr .9fr;
-            align-items: center;
-            gap: 70px;
-        }
-
-
-        .hero-text {
-            animation: heroLeft 1s ease forwards;
-        }
-
-
-        @keyframes heroLeft {
-
-            from {
-                opacity: 0;
-                transform: translateX(-70px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-
-        .small-title {
-            display: inline-block;
-            padding: 8px 15px;
-
-            border: 1px solid rgba(139,92,246,.5);
-            background: rgba(139,92,246,.1);
-
-            border-radius: 30px;
-
-            color: #c4b5fd;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-
-        h1 {
-            font-size: clamp(45px, 7vw, 78px);
-            line-height: 1;
-            margin-bottom: 20px;
-        }
-
-
-        h1 span {
-            color: #8b5cf6;
-        }
-
-
-        .hero-text h2 {
-            color: #cbd5e1;
-            font-size: 23px;
-            margin-bottom: 20px;
-        }
-
-
-        .hero-text p {
-            color: #94a3b8;
-            max-width: 600px;
-            line-height: 1.8;
-            font-size: 16px;
-        }
-
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-
-        .btn {
-            padding: 13px 22px;
-            border-radius: 12px;
-            font-weight: bold;
-            transition: .3s;
-        }
-
-
-        .btn-primary {
-            background: #7c3aed;
-        }
-
-
-        .btn-primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(124,58,237,.35);
-        }
-
-
-        .btn-outline {
-            border: 1px solid rgba(255,255,255,.15);
-            color: #cbd5e1;
-        }
-
-
-        .btn-outline:hover {
-            border-color: #8b5cf6;
-            transform: translateY(-5px);
-        }
-
-
-        /* =====================================================
-           PHOTO CARD
-           ===================================================== */
-
-        .photo-container {
-            display: flex;
-            justify-content: center;
-
-            animation: heroRight 1.2s ease forwards;
-        }
-
-
-        @keyframes heroRight {
-
-            from {
-                opacity: 0;
-                transform: translateX(70px) scale(.9);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
-
-
-        .photo-card {
-            width: 360px;
-            height: 470px;
-
-            position: relative;
-
-            padding: 10px;
-
-            border-radius: 35px;
-
-            background: linear-gradient(
-                135deg,
-                #8b5cf6,
-                #06b6d4,
-                #8b5cf6
-            );
-
-            background-size: 300% 300%;
-
-            animation:
-                gradientMove 5s ease infinite,
-                floating 5s ease-in-out infinite;
-
-            box-shadow:
-                0 0 80px rgba(139,92,246,.25);
-        }
-
-
-        @keyframes gradientMove {
-
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-
-        @keyframes floating {
-
-            0%,100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-
-
-        .photo-inner {
-            width: 100%;
-            height: 100%;
-
-            overflow: hidden;
-
-            border-radius: 27px;
-
-            background: #111827;
-            position: relative;
-        }
-
-
-        .photo-inner img {
-            width: 100%;
-            height: 100%;
-
-            object-fit: cover;
-
-            object-position: center;
-
-            transition: .7s;
-        }
-
-
-        .photo-card:hover img {
-            transform: scale(1.07);
-        }
-
-
-        /* =====================================================
-           FLOATING BADGES
-           ===================================================== */
-
-        .badge {
-            position: absolute;
-
-            padding: 10px 15px;
-
-            background: rgba(15,23,42,.9);
-            border: 1px solid rgba(255,255,255,.1);
-
-            backdrop-filter: blur(10px);
-
-            border-radius: 12px;
-
-            font-size: 13px;
-
-            z-index: 5;
-
-            box-shadow: 0 10px 30px rgba(0,0,0,.3);
-        }
-
-
-        .badge-one {
-            top: 30px;
-            left: -45px;
-            animation: badgeFloat 4s infinite ease-in-out;
-        }
-
-
-        .badge-two {
-            bottom: 40px;
-            right: -45px;
-            animation: badgeFloat 4s infinite ease-in-out 1s;
-        }
-
-
-        @keyframes badgeFloat {
-
-            0%,100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-12px);
-            }
-        }
-
-
-        /* =====================================================
-           SECTIONS
-           ===================================================== */
-
-        section {
-            max-width: 1150px;
-            margin: auto;
-            padding: 100px 30px;
-        }
-
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 55px;
-        }
-
-
-        .section-title small {
-            color: #8b5cf6;
-            font-weight: bold;
-        }
-
-
-        .section-title h2 {
-            font-size: 40px;
-            margin-top: 8px;
-        }
-
-
-        .section-title p {
-            color: #94a3b8;
-            margin-top: 12px;
-        }
-
-
-        /* =====================================================
-           ABOUT
-           ===================================================== */
-
-        .about-box {
-            padding: 40px;
-
-            background: rgba(255,255,255,.035);
-            border: 1px solid rgba(255,255,255,.08);
-
-            border-radius: 25px;
-
-            line-height: 1.9;
-            color: #cbd5e1;
-
-            transition: .4s;
-        }
-
-
-        .about-box:hover {
-            transform: translateY(-7px);
-            border-color: rgba(139,92,246,.5);
-        }
-
-
-        .about-box strong {
-            color: white;
-        }
-
-
-        /* =====================================================
-           MODULES
-           ===================================================== */
-
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-
-        .module-card {
-            padding: 28px;
-
-            min-height: 270px;
-
-            background: rgba(255,255,255,.035);
-
-            border: 1px solid rgba(255,255,255,.08);
-
-            border-radius: 22px;
-
-            position: relative;
-
-            overflow: hidden;
-
-            transition: .4s;
-        }
-
-
-        .module-card::before {
-            content: "";
-
-            position: absolute;
-
-            width: 100px;
-            height: 100px;
-
-            background: #8b5cf6;
-
-            filter: blur(70px);
-
-            opacity: 0;
-
-            right: -20px;
-            top: -20px;
-
-            transition: .4s;
-        }
-
-
-        .module-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(139,92,246,.6);
-        }
-
-
-        .module-card:hover::before {
-            opacity: .4;
-        }
-
-
-        .module-icon {
-            font-size: 35px;
-            margin-bottom: 18px;
-        }
-
-
-        .module-code {
-            color: #8b5cf6;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-
-        .module-card h3 {
-            margin: 8px 0 12px;
-            font-size: 20px;
-        }
-
-
-        .module-card p {
-            color: #94a3b8;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-
-        .documents {
-            margin-top: 20px;
-        }
-
-
-        .documents-title {
-            color: #cbd5e1;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-
-        .document {
-            display: block;
-
-            padding: 9px 11px;
-
-            margin-bottom: 7px;
-
-            background: rgba(255,255,255,.04);
-
-            border-radius: 8px;
-
-            color: #a5b4fc;
-
-            font-size: 12px;
-
-            transition: .3s;
-        }
-
-
-        .document:hover {
-            background: rgba(139,92,246,.15);
-            transform: translateX(5px);
-        }
-
-
-        .no-doc {
-            color: #64748b;
-            font-size: 12px;
-        }
-
-        .document-folder {
-            margin-top: 10px;
-            padding: 8px;
-            background: rgba(255,255,255,.025);
-            border: 1px solid rgba(255,255,255,.06);
-            border-radius: 12px;
-        }
-
-        .folder-title {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 7px 4px;
-            border: 0;
-            background: transparent;
-            color: #c4b5fd;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: .25s;
-        }
-
-        .folder-title:hover {
-            background: rgba(139,92,246,.10);
-        }
-
-        .folder-arrow {
-            display: inline-block;
-            font-size: 10px;
-            transition: transform .25s ease;
-        }
-
-        .folder-title[aria-expanded="true"] .folder-arrow {
-            transform: rotate(90deg);
-        }
-
-        .folder-content {
-            display: none;
-            padding: 4px 0 2px;
-        }
-
-        .folder-content.open {
-            display: block;
-            animation: folderOpen .25s ease;
-        }
-
-        @keyframes folderOpen {
-            from {
-                opacity: 0;
-                transform: translateY(-4px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .document-folder.level-1 {
-            margin-left: 12px;
-            background: rgba(139,92,246,.035);
-        }
-
-        .document-folder.level-2,
-        .document-folder.level-3 {
-            margin-left: 12px;
-        }
-
-        .empty-folder {
-            color: #64748b;
-            font-size: 12px;
-            padding: 7px 4px;
-        }
-
-
-        /* =====================================================
-           PROJECTS
-           ===================================================== */
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-
-        .project {
-            padding: 30px;
-
-            border-radius: 22px;
-
-            background: rgba(255,255,255,.035);
-
-            border: 1px solid rgba(255,255,255,.08);
-
-            transition: .4s;
-        }
-
-
-        .project:hover {
-            transform: translateY(-8px);
-            border-color: rgba(139,92,246,.5);
-        }
-
-
-        .project h3 {
-            margin-bottom: 12px;
-        }
-
-
-        .project p {
-            color: #94a3b8;
-            line-height: 1.7;
-            font-size: 14px;
-        }
-
-
-        /* =====================================================
-           SKILLS
-           ===================================================== */
-
-        .skills {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-
-        .skill {
-            padding: 22px;
-
-            background: rgba(255,255,255,.035);
-
-            border: 1px solid rgba(255,255,255,.08);
-
-            border-radius: 15px;
-
-            transition: .3s;
-        }
-
-
-        .skill:hover {
-            transform: scale(1.03);
-            border-color: #8b5cf6;
-        }
-
-
-        .skill-top {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-
-        .skill-top span:last-child {
-            color: #8b5cf6;
-        }
-
-
-        .bar {
-            height: 6px;
-            background: #1e293b;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-
-        .bar span {
-            display: block;
-            height: 100%;
-            background: linear-gradient(90deg,#8b5cf6,#06b6d4);
-
-            animation: loadBar 2s ease;
-        }
-
-
-        @keyframes loadBar {
-
-            from {
-                width: 0;
-            }
-        }
-
-
-        /* =====================================================
-           CONTACT
-           ===================================================== */
-
-        .contact-box {
-            text-align: center;
-
-            padding: 60px 30px;
-
-            border-radius: 30px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(124,58,237,.12),
-                    rgba(6,182,212,.08)
-                );
-
-            border: 1px solid rgba(255,255,255,.1);
-        }
-
-
-        .contact-box h2 {
-            font-size: 35px;
-            margin-bottom: 15px;
-        }
-
-
-        .contact-box p {
-            color: #94a3b8;
-            margin-bottom: 25px;
-        }
-
-
-        /* =====================================================
-           FOOTER
-           ===================================================== */
-
-        footer {
-            text-align: center;
-
-            padding: 30px;
-
-            border-top: 1px solid rgba(255,255,255,.08);
-
-            color: #64748b;
-
-            font-size: 13px;
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-           ===================================================== */
-
-        @media (max-width: 900px) {
-
-            .hero {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .hero-text p {
-                margin: auto;
-            }
-
-            .buttons {
-                justify-content: center;
-            }
-
-            .modules-grid,
-            .projects-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .skills {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .photo-container {
-                margin-top: 30px;
-            }
-        }
-
-
-        @media (max-width: 650px) {
-
-            nav {
-                padding: 14px 16px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding-top: 120px;
-            }
-
-            .photo-card {
-                width: 280px;
-                height: 380px;
-            }
-
-            .badge-one {
-                left: -10px;
-            }
-
-            .badge-two {
-                right: -10px;
-            }
-
-            .modules-grid,
-            .projects-grid,
-            .skills {
-                grid-template-columns: 1fr;
-            }
-
-            section {
-                padding: 70px 20px;
-            }
-
-            .section-title h2 {
-                font-size: 32px;
-            }
-
-            .about-box {
-                padding: 25px;
-            }
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio — <?= $h($me['name']) ?></title>
+<style>
+:root{--bg:#fff6f1;--card:rgba(255,255,255,.68);--bd:rgba(180,110,120,.22);--tx:#3a2733;--mu:#7d6571;--a:#d9688a;--b:#f2a07a;--c:#a98bdc;--g:linear-gradient(135deg,var(--a),var(--b) 55%,var(--c))}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;line-height:1.6}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.5;z-index:-1;animation:float 18s ease-in-out infinite}
+.b1{width:420px;height:420px;background:var(--a);top:-100px;left:-100px}
+.b2{width:380px;height:380px;background:var(--b);bottom:-80px;right:-80px;animation-delay:-6s}
+.b3{width:300px;height:300px;background:var(--c);top:45%;left:55%;animation-delay:-12s}
+@keyframes float{50%{transform:translate(60px,-50px) scale(1.15)}}
+nav{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 6%;backdrop-filter:blur(14px);background:rgba(255,246,241,.78);border-bottom:1px solid var(--bd);z-index:50}
+.logo{font-weight:800;font-size:1.3rem;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav a{color:var(--mu);text-decoration:none;margin-left:22px;font-size:.95rem;transition:.3s}
+nav a:hover{color:var(--a)}
+section{padding:100px 6% 40px;max-width:1200px;margin:auto}
+h2{font-size:2.1rem;margin-bottom:8px}
+h2 span,.grad{background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mu);margin-bottom:34px}
+#home{min-height:100vh;display:flex;align-items:center;gap:50px;flex-wrap:wrap-reverse;justify-content:center}
+.hero-t{flex:1 1 360px}
+.hero-t h1{font-size:clamp(2.4rem,6vw,4rem);line-height:1.1;margin:8px 0}
+.hi{color:var(--a);font-weight:600;letter-spacing:2px}
+.type{font-size:1.4rem;min-height:2em;color:var(--mu)}
+.type b{color:var(--tx)}.cur{animation:blink 1s infinite;color:var(--a)}
+@keyframes blink{50%{opacity:0}}
+.btns{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap}
+.btn{padding:12px 26px;border-radius:50px;text-decoration:none;font-weight:600;border:1px solid var(--bd);color:var(--tx);transition:.3s;cursor:pointer;background:var(--card);font-size:1rem}
+.btn.p{background:var(--g);border:0;color:#3a1f2b;box-shadow:0 10px 30px rgba(217,104,138,.35)}
+.btn:hover{transform:translateY(-4px)}
+.ph{position:relative;width:min(320px,70vw);aspect-ratio:1;flex:0 0 auto}
+.ph::before{content:"";position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(var(--a),var(--b),var(--c),var(--a));animation:spin 6s linear infinite}
+.ph .in{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:#f6dfe0;display:grid;place-items:center;font-size:5rem;font-weight:800;border:6px solid var(--bg)}
+.ph img,.abp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.about{display:flex;gap:40px;align-items:center;flex-wrap:wrap}
+.abp{position:relative;flex:0 0 340px;max-width:100%;height:430px;border-radius:24px;overflow:hidden;background:var(--g);display:grid;place-items:center;font-size:4rem;transform:rotate(-3deg);transition:.4s;box-shadow:0 20px 50px rgba(120,60,80,.28)}
+.abp:hover{transform:rotate(0) scale(1.03)}
+.abt{flex:1 1 320px;color:var(--mu);font-size:1.05rem}
+.stats{display:flex;gap:16px;margin-top:22px;flex-wrap:wrap}
+.stat{flex:1;min-width:100px;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--bd);text-align:center}
+.stat b{font-size:2rem;display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.card{position:relative;padding:26px;border-radius:20px;background:var(--card);border:1px solid var(--bd);backdrop-filter:blur(10px);cursor:pointer;transition:transform .25s,border-color .3s;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--x,50%) var(--y,0),rgba(217,104,138,.2),transparent 60%);opacity:0;transition:.3s}
+.card:hover{border-color:var(--a)}.card:hover::after{opacity:1}
+.card>*{position:relative;z-index:1}
+.ico{font-size:2.2rem}.mid{color:var(--a);font-weight:700;font-size:.85rem;letter-spacing:2px;margin-top:8px}
+.card h3{margin:4px 0 12px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.75rem;padding:3px 10px;border-radius:20px;background:rgba(217,104,138,.14);color:#a8405f}
+.cnt{margin-top:14px;font-size:.85rem;color:var(--mu)}
+.rv{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}.rv.on{opacity:1;transform:none}
+.contact{text-align:center}
+.soc{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+footer{text-align:center;color:var(--mu);padding:40px 0;font-size:.9rem}
+.modal{position:fixed;inset:0;background:rgba(58,39,51,.55);backdrop-filter:blur(8px);display:none;place-items:center;z-index:100;padding:16px}
+.modal.open{display:grid}
+.box{width:min(1000px,100%);max-height:92vh;overflow:auto;background:#fffaf7;border:1px solid var(--bd);border-radius:24px;padding:26px;animation:pop .35s}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.mh{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.x{background:var(--card);border:1px solid var(--bd);color:var(--tx);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1.1rem;flex:0 0 auto}
+.tabs{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:30px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer;font-size:.95rem}
+.tab.on{background:var(--g);color:#3a1f2b;border:0}
+.parts,.tabs2{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.part{padding:10px 24px;border-radius:14px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;font-weight:700;font-size:1rem;transition:.25s}.part:hover{transform:translateY(-2px)}.part.on{background:var(--g);color:#3a1f2b;border:0}
+.file{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:var(--card);border:1px solid var(--bd);margin-bottom:10px;animation:pop .3s backwards}
+.file span{overflow:hidden;text-overflow:ellipsis}
+.file div{display:flex;gap:8px;flex:0 0 auto}
+.file a,.file button{font-size:.85rem;padding:6px 14px;border-radius:20px;text-decoration:none;color:#fff;background:var(--a);border:0;cursor:pointer}
+.file a{color:var(--tx);background:transparent;border:1px solid var(--bd)}
+.empty{text-align:center;color:var(--mu);padding:30px}
+iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;margin-top:12px;background:#fff}
+@media(max-width:700px){nav a{margin-left:12px;font-size:.85rem}.nl{display:none}}
+</style>
 </head>
-
-
 <body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 
+<nav><div class="logo">&lt;<?= $h(explode(' ',$me['name'])[0]) ?>/&gt;</div>
+<div><a href="#home" class="nl">Accueil</a><a href="#about">À propos</a><a href="#modules">Modules</a><a href="#projects">Projets</a><a href="#contact">Contact</a></div></nav>
 
-<!-- =====================================================
-     NAVBAR
-     ===================================================== -->
-
-<nav>
-
-    <a href="#home" class="logo">
-        Oumaima<span>.</span>
-    </a>
-
-    <ul class="nav-links">
-
-        <li><a href="#about">About</a></li>
-
-        <li><a href="#modules">Modules</a></li>
-
-        <li><a href="#projects">Projects</a></li>
-
-        <li><a href="#skills">Skills</a></li>
-
-        <li><a href="#contact">Contact</a></li>
-
-    </ul>
-
-</nav>
-
-
-
-<!-- =====================================================
-     HERO
-     ===================================================== -->
-
-<header class="hero" id="home">
-
-
-    <div class="hero-text">
-
-        <span class="small-title">
-            👩‍💻 Développement Digital · 2ème année
-        </span>
-
-
-        <h1>
-            Hi, I'm <span>Basma</span>
-        </h1>
-
-
-        <h2>
-            Étudiante en Développement Digital
-        </h2>
-
-
-        <p>
-            Je suis une étudiante passionnée par le développement web
-            et la création de solutions numériques modernes.
-            Découvrez mon parcours, mes compétences et les travaux
-            que je réalise durant ma formation.
-        </p>
-
-
-        <div class="buttons">
-
-            <a href="#modules" class="btn btn-primary">
-                Voir mes modules →
-            </a>
-
-            <a href="#contact" class="btn btn-outline">
-                Me contacter
-            </a>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- PHOTO -->
-
-    <div class="photo-container">
-
-        <div class="photo-card">
-
-            <div class="photo-inner">
-
-                <img
-                    src="/images/Basma.jpeg"
-                    alt="Photo de Basma Elmaimouni&é"
-                >
-
-            </div>
-
-
-            <div class="badge badge-one">
-                ✨ Web Developer
-            </div>
-
-
-            <div class="badge badge-two">
-                2ème Année FULL STACK
-            
-            </div>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<!-- =====================================================
-     ABOUT
-     ===================================================== -->
+<section id="home">
+  <div class="hero-t rv">
+    <div class="hi">BONJOUR, JE SUIS</div>
+    <h1 class="grad"><?= $h($me['name']) ?></h1>
+    <div class="type"><b id="t"></b><span class="cur">|</span></div>
+    <div class="btns"><a class="btn p" href="#modules">Voir mes modules</a><a class="btn" href="#projects">Mes projets</a></div>
+  </div>
+  <div class="ph rv"><div class="in"><?= $h(mb_strtoupper(mb_substr($me['name'],0,1))) ?><img src="<?= $h($me['photo']) ?>" alt="" onerror="this.remove()"></div></div>
+</section>
 
 <section id="about">
-
-    <div class="section-title">
-
-        <small>ABOUT ME</small>
-
-        <h2>À propos de moi</h2>
-
-        <p>
-            Mon parcours et ma passion pour le développement digital
-        </p>
-
+  <div class="about rv">
+    <div class="abp"><?= $h(mb_strtoupper(mb_substr($me['name'],0,1))) ?><img src="<?= $h($me['about_photo']) ?>" alt="" onerror="this.remove()"></div>
+    <div class="abt">
+      <h2>À propos <span>de moi</span></h2>
+      <p><?= $h($me['about']) ?></p>
+      <div class="stats">
+        <div class="stat"><b class="grad" data-n="<?= count($modules) ?>">0</b>Modules</div>
+        <div class="stat"><b class="grad" data-n="<?= count($projects) ?>">0</b>Projets</div>
+        <div class="stat"><b class="grad" data-n="<?= array_sum(array_map(fn($d)=>cnt($d,'td')+cnt($d,'ateliers'),$data)) ?>">0</b>TD &amp; Ateliers</div>
+      </div>
     </div>
-
-
-    <div class="about-box">
-
-        <p>
-
-            Je suis <strong>Basma Elmaimouni</strong>, étudiante en
-            <strong>2ème année de Développement Digital</strong>.
-
-            <br><br>
-
-            Passionnée par le développement web et la création
-            de solutions numériques, je développe progressivement
-            mes compétences à travers différents
-            <strong>TD et TP</strong> réalisés durant ma formation.
-
-            <br><br>
-
-            Au cours de mon parcours, j'ai travaillé avec plusieurs
-            technologies telles que
-            <strong>HTML, CSS, JavaScript, PHP, SQL et Python</strong>.
-
-            <br><br>
-
-            Ce portfolio présente mon évolution, mes compétences,
-            mes projets ainsi que les différents travaux réalisés
-            dans chacun de mes modules.
-
-        </p>
-
-    </div>
-
+  </div>
 </section>
-
-
-
-<!-- =====================================================
-     MODULES
-     ===================================================== -->
 
 <section id="modules">
-
-    <div class="section-title">
-
-        <small>MY LEARNING</small>
-
-        <h2>Mes Modules</h2>
-
-        <p>
-            Retrouvez mes TD et TP réalisés dans chaque module.
-        </p>
-
+  <h2 class="rv">Mes <span>Modules</span></h2>
+  <p class="sub rv">Clique sur un module pour consulter ses TDs, ateliers et projets.</p>
+  <div class="grid">
+  <?php foreach ($modules as $id => $m): $d = $data[$id]; ?>
+    <div class="card rv" onclick="openMod('<?= $id ?>')">
+      <div class="ico"><?= $m[1] ?></div><div class="mid"><?= $id ?></div>
+      <h3><?= $h($m[0]) ?></h3>
+      <div class="tags"><?php foreach (tagsOf($d) as $tg): ?><span class="tag"><?= $h($tg) ?></span><?php endforeach; ?></div>
+      <div class="cnt"><?= cnt($d,'td') ?> TD · <?= cnt($d,'ateliers') ?> ateliers<?= cnt($d,'projets') > 0 ? ' · '.cnt($d,'projets').' projets' : '' ?></div>
     </div>
-
-
-    <div class="modules-grid">
-
-
-        <?php foreach ($modules as $folder => $module): ?>
-
-            <article class="module-card">
-
-                <div class="module-icon">
-                    <?= $module["icon"] ?>
-                </div>
-
-
-                <span class="module-code">
-                    <?= htmlspecialchars($module["code"]) ?>
-                </span>
-
-
-                <h3>
-                    <?= htmlspecialchars($module["title"]) ?>
-                </h3>
-
-
-                <p>
-                    <?= htmlspecialchars($module["description"]) ?>
-                </p>
-
-
-                <div class="documents">
-
-                    <div class="documents-title">
-                        📁 Travaux :
-                    </div>
-
-                    <?php if (!empty($module["documents"])): ?>
-
-                        <?php
-                        renderDocuments(
-                            $module["documents"],
-                            $folder
-                        );
-                        ?>
-
-                    <?php else: ?>
-
-                        <span class="no-doc">
-                            Aucun document pour le moment.
-                        </span>
-
-                    <?php endif; ?>
-
-                </div>
-
-            </article>
-
-        <?php endforeach; ?>
-
-
-    </div>
-
+  <?php endforeach; ?>
+  </div>
 </section>
-
-
-
-<!-- =====================================================
-     PROJECTS
-     ===================================================== -->
 
 <section id="projects">
-
-    <div class="section-title">
-
-        <small>MY WORK</small>
-
-        <h2>Projects</h2>
-
-        <p>
-            Quelques exemples de travaux et projets réalisés.
-        </p>
-
+  <h2 class="rv">Mes <span>Projets</span></h2>
+  <p class="sub rv">Les projets réalisés pendant la formation Full Stack.</p>
+  <div class="grid">
+  <?php foreach ($projects as $i => $p): ?>
+    <div class="card rv" onclick="openProj(<?= $i ?>)">
+      <div class="ico">💻</div>
+      <h3><?= $h($p[0]) ?></h3>
+      <p style="color:var(--mu);font-size:.95rem;margin-bottom:12px"><?= $h($p[1]) ?></p>
+      <div class="tags"><?php foreach ($p[2] as $t): ?><span class="tag"><?= $h($t) ?></span><?php endforeach; ?></div>
+      <div class="cnt"><?= count($pfiles["P$i"]) ?> document(s) · <a href="<?= $h($p[3]) ?>" target="_blank" onclick="event.stopPropagation()" style="color:var(--a)">GitHub ↗</a></div>
     </div>
-
-
-    <div class="projects-grid">
-
-
-        <div class="project">
-
-            <h3>🌐 Web Development</h3>
-
-            <p>
-                Création de pages web modernes avec HTML et CSS,
-                accompagnées d'interactions JavaScript.
-            </p>
-
-        </div>
-
-
-        <div class="project">
-
-            <h3>🗄️ Database</h3>
-
-            <p>
-                Création et gestion de bases de données SQL,
-                requêtes et manipulation des données.
-            </p>
-
-        </div>
-
-
-        <div class="project">
-
-            <h3>⚙️ PHP Application</h3>
-
-            <p>
-                Développement d'applications web dynamiques
-                avec PHP et PDO.
-            </p>
-
-        </div>
-
-
-    </div>
-
+  <?php endforeach; ?>
+  </div>
 </section>
 
-
-
-<!-- =====================================================
-     SKILLS
-     ===================================================== -->
-
-<section id="skills">
-
-    <div class="section-title">
-
-        <small>MY SKILLS</small>
-
-        <h2>Compétences</h2>
-
-        <p>
-            Technologies étudiées durant ma formation.
-        </p>
-
-    </div>
-
-
-    <div class="skills">
-
-
-        <div class="skill">
-
-            <div class="skill-top">
-                <span>HTML</span>
-                <span>90%</span>
-            </div>
-
-            <div class="bar">
-                <span style="width:90%"></span>
-            </div>
-
-        </div>
-
-
-        <div class="skill">
-
-            <div class="skill-top">
-                <span>CSS</span>
-                <span>85%</span>
-            </div>
-
-            <div class="bar">
-                <span style="width:85%"></span>
-            </div>
-
-        </div>
-
-
-        <div class="skill">
-
-            <div class="skill-top">
-                <span>JavaScript</span>
-                <span>75%</span>
-            </div>
-
-            <div class="bar">
-                <span style="width:75%"></span>
-            </div>
-
-        </div>
-
-
-        <div class="skill">
-
-            <div class="skill-top">
-                <span>PHP</span>
-                <span>80%</span>
-            </div>
-
-            <div class="bar">
-                <span style="width:80%"></span>
-            </div>
-
-        </div>
-
-
-        <div class="skill">
-
-            <div class="skill-top">
-                <span>SQL</span>
-                <span>80%</span>
-            </div>
-
-            <div class="bar">
-                <span style="width:80%"></span>
-            </div>
-
-        </div>
-
-
-        <div class="skill">
-
-            <div class="skill-top">
-                <span>Python</span>
-                <span>65%</span>
-            </div>
-
-            <div class="bar">
-                <span style="width:65%"></span>
-            </div>
-
-        </div>
-
-
-    </div>
-
+<section id="contact" class="contact">
+  <h2 class="rv">Me <span>contacter</span></h2>
+  <p class="sub rv">Une idée, une opportunité ? Parlons-en !</p>
+  <div class="soc rv">
+    <a class="btn p" href="mailto:<?= $h($me['email']) ?>">✉️ Email</a>
+    <a class="btn" href="<?= $h($me['github']) ?>" target="_blank">GitHub</a>
+    <a class="btn" href="<?= $h($me['linkedin']) ?>" target="_blank">LinkedIn</a>
+  </div>
 </section>
+<footer>© <?= date('Y') ?> <?= $h($me['name']) ?> — Code today. Online tomorrow.</footer>
 
-
-
-<!-- =====================================================
-     CONTACT
-     ===================================================== -->
-
-<section id="contact">
-
-    <div class="contact-box">
-
-        <h2>Let's work together ✨</h2>
-
-        <p>
-            Vous souhaitez découvrir mon travail ou échanger avec moi ?
-        </p>
-
-
-        <a
-            href="mailto:oumaima.elharti@example.com"
-            class="btn btn-primary"
-        >
-            ✉ Me contacter
-        </a>
-
-    </div>
-
-</section>
-
-
-
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
-
-<footer>
-
-    © <?= date("Y") ?>BASMA ELMAIMOUNI · Portfolio
-
-</footer>
-
-
-
-<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeM()">
+  <div class="box">
+    <div class="mh"><div><div class="mid" id="mid"></div><h2 id="mt" style="margin:0"></h2></div><button class="x" onclick="closeM()">✕</button></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="list"></div>
+    <div id="view"></div>
+  </div>
+</div>
 
 <script>
+const MODS=<?= json_encode($modules, JSON_UNESCAPED_UNICODE) ?>;
+const DATA=<?= json_encode($data, JSON_UNESCAPED_UNICODE) ?>;
+const PROJ=<?= json_encode($projects, JSON_UNESCAPED_UNICODE) ?>;
+const PF=<?= json_encode($pfiles, JSON_UNESCAPED_UNICODE) ?>;
+const LAB={td:'📘 TD',ateliers:'🛠️ Ateliers',projets:'📁 Projets'};
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let cur=null,part=0,ty=null;
 
-    /* Animation quand on arrive sur les sections */
+function show(m){$('modal').classList.add('open');document.body.style.overflow='hidden';$('view').innerHTML=''}
+function closeM(){$('modal').classList.remove('open');document.body.style.overflow=''}
+function openMod(id){
+  cur=id;part=0;show();$('mid').textContent=id;$('mt').textContent=MODS[id][0];
+  $('tabs').style.display='block';draw();
+}
+function draw(){
+  const P=DATA[cur],p=P[part],types=Object.keys(p.types);
+  if(!types.includes(ty))ty=types[0];
+  let h='';
+  if(P.length>1)h+='<div class="parts">'+P.map((x,i)=>`<button class="part${i===part?' on':''}" onclick="setPart(${i})">${esc(x.label||'Général')}</button>`).join('')+'</div>';
+  h+='<div class="tabs2">'+types.map(k=>`<button class="tab${k===ty?' on':''}" onclick="setTy('${k}')">${LAB[k]} (${p.types[k].length})</button>`).join('')+'</div>';
+  $('tabs').innerHTML=h;render(p.types[ty]||[]);$('view').innerHTML='';
+}
+function setPart(i){part=i;draw()}
+function setTy(k){ty=k;draw()}
+function openProj(i){
+  show();$('mid').textContent='PROJET';$('mt').textContent=PROJ[i][0];
+  $('tabs').style.display='none';render(PF['P'+i]);
+}
+function render(f){
+  $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div><button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a></div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
+}
+function prev(u){$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
+document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
 
-    const sections = document.querySelectorAll("section");
+// typing
+const W=<?= json_encode($me['typing'], JSON_UNESCAPED_UNICODE) ?>;let wi=0,ci=0,del=false;
+(function ty(){const w=W[wi];$('t').textContent=w.slice(0,ci);
+  if(!del&&ci===w.length){del=true;return setTimeout(ty,1400)}
+  if(del&&ci===0){del=false;wi=(wi+1)%W.length}
+  ci+=del?-1:1;setTimeout(ty,del?40:90)})();
 
+// reveal + counters
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.1+'s';io.observe(el)});
+const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,n=+el.dataset.n;let v=0;
+  const s=setInterval(()=>{v+=Math.max(1,Math.ceil(n/30));if(v>=n){v=n;clearInterval(s)}el.textContent=v},40);co.unobserve(el)}));
+document.querySelectorAll('[data-n]').forEach(el=>co.observe(el));
 
-    const observer = new IntersectionObserver(
-
-        function(entries) {
-
-            entries.forEach(function(entry) {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.style.opacity = "1";
-
-                    entry.target.style.transform = "translateY(0)";
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: 0.12
-        }
-
-    );
-
-
-    sections.forEach(function(section) {
-
-        section.style.opacity = "0";
-
-        section.style.transform = "translateY(40px)";
-
-        section.style.transition = "opacity .8s ease, transform .8s ease";
-
-        observer.observe(section);
-
-    });
-
-
-    /* =====================================================
-       Ouvrir / fermer UML, FIGMA, Atelier1, etc.
-       ===================================================== */
-
-    function toggleFolder(folderId, button) {
-
-        const folder = document.getElementById(folderId);
-
-        if (!folder) {
-            return;
-        }
-
-        const isOpen = folder.classList.toggle("open");
-
-        button.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    }
-
-
+// card glow
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();
+  c.style.setProperty('--x',e.clientX-r.left+'px');c.style.setProperty('--y',e.clientY-r.top+'px')}));
 </script>
-
-
 </body>
 </html>
