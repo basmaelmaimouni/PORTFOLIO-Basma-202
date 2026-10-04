@@ -304,7 +304,7 @@ function render(f){
         </div>
       </div>
     `).join('')
-    : '<div class="empty">Aucun fichier pour le moment 📭</div>';
+    : '<div class="empty">Aucun fichier pour le moment </div>';
 }
 
 document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
