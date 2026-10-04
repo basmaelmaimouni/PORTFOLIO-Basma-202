@@ -1,17 +1,17 @@
 <?php
 /* ================== CONFIG (بدّل غير هنا) ================== */
 // المسارات: على Vercel كيتخدم public/ من الجذر (/docs/...)، وفاللوكال (XAMPP) كيتخدم ../public
-$onVercel = getenv('VERCEL')  getenv('VERCEL_ENV')  !is_dir(DIR.'/../public');
-$fs  = realpath(DIR.'/../public') ?: (DIR.'/public');
-$url = $onVercel ? '' : (is_dir(DIR.'/../public') ? '../public' : 'public');
+$onVercel = getenv('VERCEL') || getenv('VERCEL_ENV') || !is_dir(__DIR__.'/../public');
+$fs  = realpath(__DIR__.'/../public') ?: (__DIR__.'/public');
+$url = $onVercel ? '' : (is_dir(__DIR__.'/../public') ? '../public' : 'public');
 $me = [
   'name'    => 'Basma Elmaimouni',                       // سميتك
   'role'    => 'Développeuse Full Stack',
   'typing'  => ['Développeuse Full Stack', 'Passionné par le Web', 'Créatif & Curieux'],
   'about'   => "Étudiante en 2ème année Développement Digital option Full Stack. J'aime transformer des idées en applications web modernes, propres et performantes. Ce portfolio regroupe mes ateliers, TDs et projets réalisés durant l'année.",
   'email'   => 'basmaelmaimouni6@gmail.com',
-  'github'  => 'https://github.com/basma',
-  'linkedin'=> 'https://linkedin.com/in/basma',
+  'github'  => 'https://github.com/karim',
+  'linkedin'=> 'https://linkedin.com/in/karim',
   'photo'   => $url.'/images/'.rawurlencode('Basma.jpeg'),          // تصويرتك لفوق (Hero)
   'about_photo' => $url.'/images/'.rawurlencode('about basma.jpeg'),        // تصويرة About me
 ];
@@ -19,7 +19,7 @@ $me = [
 $modules = [
   'M201' => ['Préparation d\'un projet web', '📋'],
   'M202' => ['Approche Agile', '🔄'],
-  'M203' => ['Gestion des données', '🗄'],
+  'M203' => ['Gestion des données', '🗄️'],
   'M204' => ['Développement front-end', '🎨'],
   'M205' => ['Développement back-end', '⚙️'],
   'M206' => ['Création d\'une application cloud native', '☁️'],
@@ -33,14 +33,14 @@ $projects = [
    كل ملف: ['السمية اللي كتبان فالموقع', 'الطريق']
    الطريق كيبدا من docs/  (بلا public/)  وكيفما كاين بالضبط فالـ dossier:
      public/docs/m-201/Figma/Atelier Figma-1.pdf   ==>   'docs/m-201/Figma/Atelier Figma-1.pdf'
-   ⚠️ على Vercel الحروف الكبيرة والصغيرة مهمين: Figma ≠ figma  /  m-201 ≠ M-201
+   ⚠ على Vercel الحروف الكبيرة والصغيرة مهمين: Figma ≠ figma  /  m-201 ≠ M-201
    الأنواع: 'td' | 'ateliers' | 'projets'
    ================================================================== */
 $files = [
   'M201' => [
     'Figma' => [
       'ateliers' => [
-        ['Atelier Figma 1', '..public/docs/m-201/Figma/Atelier Figma-1.pdf'],
+        ['Atelier Figma 1', 'docs/m-201/Figma/Atelier Figma-1.pdf'],
         ['Atelier Figma 2', 'docs/m-201/Figma/Atelier Figma-2.pdf'],
         ['Atelier 3 Figma', 'docs/m-201/Figma/Atelier-3 Figma.pdf'],
       ],
@@ -48,11 +48,11 @@ $files = [
     'UML' => [
       'td' => [
         // بدّل ... بالسمية الكاملة ديال الملف وحيّد //
-         ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_de_class.pdf'],
-         ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_use_case.pdf'],
-         ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_séquance.pdf'],
-         ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_class.pdf'],
-         ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use_case.pdf'],
+        // ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
+        // ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
+        // ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_s....pdf'],
+        // ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_....pdf'],
+        // ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use....pdf'],
       ],
       'ateliers' => [
         ['Atelier 1', 'docs/m-201/UML/Atelier 1.pdf'],
@@ -62,7 +62,7 @@ $files = [
   'M202' => [
     'WaterFall' => [
       'ateliers' => [
-       ['Exercices', 'docs/m-202/WaterFall/Atelier 1/EXERCICES.pdf'],
+        // ['Exercices', 'docs/m-202/WaterFall/Atelier..../EXERCICES.pdf'],
       ],
     ],
   ],
@@ -182,6 +182,7 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
 <nav><div class="logo">&lt;<?= $h(explode(' ',$me['name'])[0]) ?>/&gt;</div>
 <div><a href="#home" class="nl">Accueil</a><a href="#about">À propos</a><a href="#modules">Modules</a><a href="#projects">Projets</a><a href="#contact">Contact</a></div></nav>
 
@@ -235,7 +236,7 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
       <h3><?= $h($p[0]) ?></h3>
       <p style="color:var(--mu);font-size:.95rem;margin-bottom:12px"><?= $h($p[1]) ?></p>
       <div class="tags"><?php foreach ($p[2] as $t): ?><span class="tag"><?= $h($t) ?></span><?php endforeach; ?></div>
-      <div class="cnt"><?= count($pfiles["P$i"]) ?> document(s) · <a href="<?= $h($p[3]) ?>" target="_blank" onclick="event.stopPropagation()" style="color:var(--a)">GitHub ↗️</a></div>
+      <div class="cnt"><?= count($pfiles["P$i"]) ?> document(s) · <a href="<?= $h($p[3]) ?>" target="_blank" onclick="event.stopPropagation()" style="color:var(--a)">GitHub ↗</a></div>
     </div>
   <?php endforeach; ?>
   </div>
@@ -260,12 +261,13 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
     <div id="view"></div>
   </div>
 </div>
+
 <script>
 const MODS=<?= json_encode($modules, JSON_UNESCAPED_UNICODE) ?>;
 const DATA=<?= json_encode($data, JSON_UNESCAPED_UNICODE) ?>;
 const PROJ=<?= json_encode($projects, JSON_UNESCAPED_UNICODE) ?>;
 const PF=<?= json_encode($pfiles, JSON_UNESCAPED_UNICODE) ?>;
-const LAB={td:'📘 TD',ateliers:'🛠 Ateliers',projets:'📁 Projets'};
+const LAB={td:'📘 TD',ateliers:'🛠️ Ateliers',projets:'📁 Projets'};
 const $=id=>document.getElementById(id);
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let cur=null,part=0,ty=null;
@@ -280,8 +282,8 @@ function draw(){
   const P=DATA[cur],p=P[part],types=Object.keys(p.types);
   if(!types.includes(ty))ty=types[0];
   let h='';
-  if(P.length>1)h+='<div class="parts">'+P.map((x,i)=><button class="part${i===part?' on':''}" onclick="setPart(${i})">${esc(x.label||'Général')}</button>).join('')+'</div>';
-  h+='<div class="tabs2">'+types.map(k=><button class="tab${k===ty?' on':''}" onclick="setTy('${k}')">${LAB[k]} (${p.types[k].length})</button>).join('')+'</div>';
+  if(P.length>1)h+='<div class="parts">'+P.map((x,i)=>`<button class="part${i===part?' on':''}" onclick="setPart(${i})">${esc(x.label||'Général')}</button>`).join('')+'</div>';
+  h+='<div class="tabs2">'+types.map(k=>`<button class="tab${k===ty?' on':''}" onclick="setTy('${k}')">${LAB[k]} (${p.types[k].length})</button>`).join('')+'</div>';
   $('tabs').innerHTML=h;render(p.types[ty]||[]);$('view').innerHTML='';
 }
 function setPart(i){part=i;draw()}
@@ -290,21 +292,10 @@ function openProj(i){
   show();$('mid').textContent='PROJET';$('mt').textContent=PROJ[i][0];
   $('tabs').style.display='none';render(PF['P'+i]);
 }
-
 function render(f){
-  $('list').innerHTML = f.length
-    ? f.map((x,i) => `
-      <div class="file" style="animation-delay:${i*.05}s">
-        <span>📄 ${esc(x.name)}</span>
-        <div>
-          <a href="${x.url}" target="_blank">Voir</a>
-          <a href="${x.url}" download>Télécharger</a>
-        </div>
-      </div>
-    `).join('')
-    : '<div class="empty">Aucun fichier pour le moment </div>';
+  $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div><button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a></div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
 }
-
+function prev(u){$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
 document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
 
 // typing
