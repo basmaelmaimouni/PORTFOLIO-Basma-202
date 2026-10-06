@@ -44,7 +44,7 @@ function groupTypes(files) {
 
 const data = {};
 for (const id of MODULE_IDS) {
-  const mod = 'm-' + id.slice(1), dir = path.join(DOCS, mod), rel = 'docs/' + mod;
+  const mod = 'M-' + id.slice(1), dir = path.join(DOCS, mod), rel = 'docs/' + mod;
   data[id] = [];
   const dirs = isDir(dir) ? fs.readdirSync(dir, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name).sort(nat) : [];
   for (const n of dirs) data[id].push({ label: n, types: groupTypes(scanPdfs(path.join(dir, n), rel + '/' + n)) });

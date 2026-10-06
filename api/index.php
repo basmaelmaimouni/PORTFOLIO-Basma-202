@@ -38,29 +38,29 @@ $files = [
   'M201' => [
     'Figma' => [
       'ateliers' => [
-        ['Atelier Figma 1', 'docs/m-201/Figma/Atelier Figma-1.pdf'],
-        ['Atelier Figma 2', 'docs/m-201/Figma/Atelier Figma-2.pdf'],
-        ['Atelier Figma 3', 'docs/m-201/Figma/Atelier Figma-3.pdf'],
+        ['Atelier Figma 1', 'docs/M-201/Figma/Atelier Figma-1.pdf'],
+        ['Atelier Figma 2', 'docs/M-201/Figma/Atelier Figma-2.pdf'],
+        ['Atelier Figma 3', 'docs/M-201/Figma/Atelier Figma-3.pdf'],
       ],
     ],
     'UML' => [
       'td' => [
         // بدّل ... بالسمية الكاملة ديال الملف وحيّد //
-         ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_de_class.pdf'],
-         ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_use_case.pdf'],
-         ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_séquence.pdf'],
-         ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_class.pdf'],
-         ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use_case.pdf'],
+         ['Ex App diagramme 1',  'docs/M-201/UML/ex_App_diagramme_de_class.pdf'],
+         ['Ex App diagramme 2',  'docs/M-201/UML/ex_App_diagramme_use_case.pdf'],
+         ['TD Diagramme',        'docs/M-201/UML/TD_Diagramme_de_séquence.pdf'],
+         ['TD1 Diagramme',       'docs/M-201/UML/TD1_diagramme_de_class.pdf'],
+         ['TD2 Diagramme',       'docs/M-201/UML/TD2_diagramme_use_case.pdf'],
       ],
       'ateliers' => [
-        ['Atelier 1', 'docs/m-201/UML/Atelier 1.pdf'],
+        ['Atelier 1', 'docs/M-201/UML/Atelier 1.pdf'],
       ],
     ],
   ],
   'M202' => [
     'WaterFall' => [
       'ateliers' => [
-         ['Exercices', 'docs/m-202/WaterFall/Atlelier 1/EXERCICES.pdf'],
+         ['Exercices', 'docs/M-202/WaterFall/Atlelier 1/EXERCICES.pdf'],
       ],
     ],
   ],
