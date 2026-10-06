@@ -1,9 +1,7 @@
 <?php
 /* ================== CONFIG (بدّل غير هنا) ================== */
 // المسارات: على Vercel كيتخدم public/ من الجذر (/docs/...)، وفاللوكال (XAMPP) كيتخدم ../public
-$onVercel = getenv('VERCEL') || getenv('VERCEL_ENV') || !is_dir(__DIR__.'/../public');
-$fs  = realpath(__DIR__.'/../public') ?: (__DIR__.'/public');
-$url = $onVercel ? '' : (is_dir(__DIR__.'/../public') ? '../public' : 'public');
+$url = '';
 $me = [
   'name'    => 'Basma Elmaimouni',                       // سميتك
   'role'    => 'Développeuse Full Stack',
@@ -42,17 +40,17 @@ $files = [
       'ateliers' => [
         ['Atelier Figma 1', 'docs/m-201/Figma/Atelier Figma-1.pdf'],
         ['Atelier Figma 2', 'docs/m-201/Figma/Atelier Figma-2.pdf'],
-        ['Atelier 3 Figma', 'docs/m-201/Figma/Atelier-3 Figma.pdf'],
+        ['Atelier Figma 3', 'docs/m-201/Figma/Atelier Figma-3.pdf'],
       ],
     ],
     'UML' => [
       'td' => [
         // بدّل ... بالسمية الكاملة ديال الملف وحيّد //
-         ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
-         ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_....pdf'],
-         ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_s....pdf'],
-         ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_....pdf'],
-         ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use....pdf'],
+         ['Ex App diagramme 1',  'docs/m-201/UML/ex_App_diagramme_de_class.pdf'],
+         ['Ex App diagramme 2',  'docs/m-201/UML/ex_App_diagramme_use_case.pdf'],
+         ['TD Diagramme',        'docs/m-201/UML/TD_Diagramme_de_séquence.pdf'],
+         ['TD1 Diagramme',       'docs/m-201/UML/TD1_diagramme_de_class.pdf'],
+         ['TD2 Diagramme',       'docs/m-201/UML/TD2_diagramme_use_case.pdf'],
       ],
       'ateliers' => [
         ['Atelier 1', 'docs/m-201/UML/Atelier 1.pdf'],
@@ -62,7 +60,7 @@ $files = [
   'M202' => [
     'WaterFall' => [
       'ateliers' => [
-         ['Exercices', 'docs/m-202/WaterFall/Atelier..../EXERCICES.pdf'],
+         ['Exercices', 'docs/m-202/WaterFall/Atlelier 1/EXERCICES.pdf'],
       ],
     ],
   ],
