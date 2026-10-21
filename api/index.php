@@ -60,14 +60,14 @@ $files = [
   'M202' => [
     'WaterFall' => [
       'ateliers' => [
-         ['Exercices', 'docs/M-202/WaterFall/Atlelier 1/EXERCICES.pdf'],
+         ['Atelier 1', 'docs/M-202/WaterFall/Atlelier 1/EXERCICES.pdf'],
       ],
     ],
     'Scrum Agile' => [
       'ateliers' => [
-         ['Atelier', 'docs/M-202/Scrum Agile/Atelier 2 Scrum Agile.pdf'],
-         ['Atelier', 'docs/M-202/Scrum Agile/Atelier3.pdf'],
-         ['Atelier', 'docs/M-202/Scrum Agile/Acheto_Etapes Atelier 4.pdf'],
+         ['Atelier 2', 'docs/M-202/Scrum Agile/Atelier 2 Scrum Agile.pdf'],
+         ['Atelier 3', 'docs/M-202/Scrum Agile/Atelier3.pdf'],
+         ['Atelier 4', 'docs/M-202/Scrum Agile/Acheto_Etapes Atelier 4.pdf'],
       ],
     ],
   ],
