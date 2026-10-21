@@ -67,6 +67,7 @@ $files = [
       'ateliers' => [
          ['Atelier', 'docs/M-202/Scrum Agile/Atelier 2 Scrum Agile.pdf'],
          ['Atelier', 'docs/M-202/Scrum Agile/Atelier3.pdf'],
+         ['Atelier', 'docs/M-202/Scrum Agile/Acheto_Etapes Atelier 4.pdf'],
       ],
     ],
   ],
