@@ -69,8 +69,6 @@ $files = [
          ['Atelier 3', 'docs/M-202/Scrum Agile/Atelier3.pdf'],
          ['Atelier 4', 'docs/M-202/Scrum Agile/Acheto_Etapes Atelier 4.pdf'],
          ['Atelier 5', 'docs/M-202/Scrum Agile/Atelier 5.pdf']
-         ['Atelier 6', 'docs/M-202/Scrum Agile/https://atelier6-j3j0nwy8p-basmaelmaimounis-projects.vercel.app/']
-      ],
     ],
   ],
   'M203' => [],
