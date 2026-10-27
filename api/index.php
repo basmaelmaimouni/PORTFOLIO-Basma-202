@@ -22,10 +22,11 @@ $modules = [
   'M205' => ['Développement back-end', '⚙️'],
   'M206' => ['Création d\'une application cloud native', '☁️'],
 ];
-// المشروعين
+// المشاريع
 $projects = [
   ['Acheto', 'Projet Acheto : présentation, objectifs et fonctionnalités principales.', ['PHP','MySQL','JS'], 'https://github.com/karim/projet1', 'docs/projets/acheto'],
   ['Projet fin formation', 'Projet de fin de formation Full Stack : conception et réalisation complète de l’application.', ['HTML','CSS','JS'], 'https://github.com/karim/projet2', 'docs/projets/projet-fin-formation'],
+  ['NOMAS — Nouvelle Maison du Sud', 'Site web de NOMAS — Nouvelle Maison du Sud.', ['Site web'], 'http://127.0.0.1:5500/NOMAS.html', 'docs/projets/nomas', 'Voir le projet ↗'],
 ];
 /* ===================== كتب هنا الملفات ديالك ديريكت =====================
    كل ملف: ['السمية اللي كتبان فالموقع', 'الطريق']
@@ -79,7 +80,7 @@ $files = [
   'M205' => [],
   'M206' => [],
 ];
-// ملفات المشروعين: 0 = Acheto ، 1 = Projet fin formation
+// ملفات المشاريع: 0 = Acheto ، 1 = Projet fin formation ، 2 = NOMAS
 $projectFiles = [
   0 => [
     // ['Rapport Acheto', 'docs/projets/acheto/rapport.pdf'],
@@ -87,10 +88,13 @@ $projectFiles = [
   1 => [
     // ['Rapport projet fin formation', 'docs/projets/projet-fin-formation/rapport.pdf'],
   ],
+  2 => [
+    ['NOMAS — Nouvelle Maison du Sud', 'http://127.0.0.1:5500/NOMAS.html'],
+  ],
 ];
 /* ================== من هنا لتحت ما تقيسش والو ================== */
 function mkUrl($path){ global $url; return $url.'/api/pdf.php?file='.rawurlencode($path); }
-function mkList($l){ return array_map(fn($f) => ['name' => $f[0], 'url' => str_starts_with($f[1], 'https://') ? $f[1] : mkUrl($f[1]), 'external' => str_starts_with($f[1], 'https://')], $l); }
+function mkList($l){ return array_map(fn($f) => ['name' => $f[0], 'url' => preg_match('/^https?:\\/\\//', $f[1]) ? $f[1] : mkUrl($f[1]), 'external' => (bool) preg_match('/^https?:\\/\\//', $f[1])], $l); }
 function cnt($d, $t){ $n = 0; foreach ($d as $p) $n += count($p['types'][$t] ?? []); return $n; }
 function tagsOf($d){ $l = array_filter(array_column($d, 'label')); return $l ?: ['TD', 'Ateliers', 'Projets']; }
 $data = [];
@@ -245,7 +249,7 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
       <h3><?= $h($p[0]) ?></h3>
       <p style="color:var(--mu);font-size:.95rem;margin-bottom:12px"><?= $h($p[1]) ?></p>
       <div class="tags"><?php foreach ($p[2] as $t): ?><span class="tag"><?= $h($t) ?></span><?php endforeach; ?></div>
-      <div class="cnt"><?= count($pfiles["P$i"]) ?> document(s) · <a href="<?= $h($p[3]) ?>" target="_blank" onclick="event.stopPropagation()" style="color:var(--a)">GitHub ↗</a></div>
+      <div class="cnt"><?= count($pfiles["P$i"]) ?> élément(s) · <a href="<?= $h($p[3]) ?>" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--a)"><?= $h($p[5] ?? 'GitHub ↗') ?></a></div>
     </div>
   <?php endforeach; ?>
   </div>
@@ -301,8 +305,11 @@ function openProj(i){
   show();$('mid').textContent='PROJET';$('mt').textContent=PROJ[i][0];
   $('tabs').style.display='none';render(PF['P'+i]);
 }
-function render(f){
+function renderOld(f){
   $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div><button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a></div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
+}
+function render(f){
+  $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div>${x.external?`<a class="file-open" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">Voir</a>`:`<button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a>`}</div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
 }
 function prev(u){if(u.startsWith('https://')){window.open(u,'_blank','noopener,noreferrer');return}$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
 document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
