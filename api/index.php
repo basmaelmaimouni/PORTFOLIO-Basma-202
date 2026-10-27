@@ -69,6 +69,7 @@ $files = [
          ['Atelier 3', 'docs/M-202/Scrum Agile/Atelier3.pdf'],
          ['Atelier 4', 'docs/M-202/Scrum Agile/Acheto_Etapes Atelier 4.pdf'],
          ['Atelier 5', 'docs/M-202/Scrum Agile/Atelier 5.pdf'],
+         ['Atelier 6', 'https://atelier6-one.vercel.app/'],
       ],
     ],
   ],
@@ -89,7 +90,7 @@ $projectFiles = [
 ];
 /* ================== من هنا لتحت ما تقيسش والو ================== */
 function mkUrl($path){ global $url; return $url.'/api/pdf.php?file='.rawurlencode($path); }
-function mkList($l){ return array_map(fn($f) => ['name' => $f[0], 'url' => mkUrl($f[1])], $l); }
+function mkList($l){ return array_map(fn($f) => ['name' => $f[0], 'url' => str_starts_with($f[1], 'https://') ? $f[1] : mkUrl($f[1]), 'external' => str_starts_with($f[1], 'https://')], $l); }
 function cnt($d, $t){ $n = 0; foreach ($d as $p) $n += count($p['types'][$t] ?? []); return $n; }
 function tagsOf($d){ $l = array_filter(array_column($d, 'label')); return $l ?: ['TD', 'Ateliers', 'Projets']; }
 $data = [];
@@ -182,6 +183,7 @@ footer{text-align:center;color:var(--mu);padding:40px 0;font-size:.9rem}
 .file div{display:flex;gap:8px;flex:0 0 auto}
 .file a,.file button{font-size:.85rem;padding:6px 14px;border-radius:20px;text-decoration:none;color:#fff;background:var(--a);border:0;cursor:pointer}
 .file a{color:var(--tx);background:transparent;border:1px solid var(--bd)}
+.file a.file-open{color:#fff;background:var(--a);border:0}
 .empty{text-align:center;color:var(--mu);padding:30px}
 iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;margin-top:12px;background:#fff}
 @media(max-width:700px){nav a{margin-left:12px;font-size:.85rem}.nl{display:none}}
@@ -302,7 +304,7 @@ function openProj(i){
 function render(f){
   $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div><button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a></div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
 }
-function prev(u){$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
+function prev(u){if(u.startsWith('https://')){window.open(u,'_blank','noopener,noreferrer');return}$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
 document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
 
 // typing
