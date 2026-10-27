@@ -88,7 +88,7 @@ $projectFiles = [
   ],
 ];
 /* ================== من هنا لتحت ما تقيسش والو ================== */
-function mkUrl($path){ global $url; return $url.'/'.implode('/', array_map('rawurlencode', explode('/', $path))); }
+function mkUrl($path){ global $url; return $url.'/api/pdf.php?file='.rawurlencode($path); }
 function mkList($l){ return array_map(fn($f) => ['name' => $f[0], 'url' => mkUrl($f[1])], $l); }
 function cnt($d, $t){ $n = 0; foreach ($d as $p) $n += count($p['types'][$t] ?? []); return $n; }
 function tagsOf($d){ $l = array_filter(array_column($d, 'label')); return $l ?: ['TD', 'Ateliers', 'Projets']; }
