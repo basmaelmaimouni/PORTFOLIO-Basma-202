@@ -24,9 +24,9 @@ $modules = [
 ];
 // المشاريع
 $projects = [
-  ['Acheto', 'Projet Acheto : présentation, objectifs et fonctionnalités principales.', ['PHP','MySQL','JS'], 'https://github.com/karim/projet1', 'docs/projets/acheto'],
+  ['Acheto', 'Projet Acheto : présentation, objectifs et fonctionnalités principales.', ['PHP','MySQL','JS'], 'https://github.com/karim/projet1', 'docs/projets/acheto', null, 'acheto-logo.jpg'],
   ['Projet fin formation', 'Projet de fin de formation Full Stack : conception et réalisation complète de l’application.', ['HTML','CSS','JS'], 'https://github.com/karim/projet2', 'docs/projets/projet-fin-formation'],
-  ['NOMAS — Nouvelle Maison du Sud', 'Site web de NOMAS — Nouvelle Maison du Sud.', ['Site web'], 'http://127.0.0.1:5500/NOMAS.html', 'docs/projets/nomas', 'Voir le projet ↗'],
+  ['NOMAS — Nouvelle Maison du Sud', 'Site web de NOMAS — Nouvelle Maison du Sud.', ['Site web'], 'http://127.0.0.1:5500/NOMAS.html', 'docs/projets/nomas', 'Voir le projet ↗', 'nomas-logo.jpg'],
 ];
 /* ===================== كتب هنا الملفات ديالك ديريكت =====================
    كل ملف: ['السمية اللي كتبان فالموقع', 'الطريق']
@@ -163,7 +163,7 @@ h2 span,.grad{background:var(--g);-webkit-background-clip:text;background-clip:t
 .card::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--x,50%) var(--y,0),rgba(217,104,138,.2),transparent 60%);opacity:0;transition:.3s}
 .card:hover{border-color:var(--a)}.card:hover::after{opacity:1}
 .card>*{position:relative;z-index:1}
-.ico{font-size:2.2rem}.mid{color:var(--a);font-weight:700;font-size:.85rem;letter-spacing:2px;margin-top:8px}
+.ico{font-size:2.2rem}.project-logo{width:88px;height:74px;object-fit:contain;border-radius:12px;background:rgba(255,255,255,.55);margin-bottom:8px}.mid{color:var(--a);font-weight:700;font-size:.85rem;letter-spacing:2px;margin-top:8px}
 .card h3{margin:4px 0 12px}
 .tags{display:flex;gap:6px;flex-wrap:wrap}
 .tag{font-size:.75rem;padding:3px 10px;border-radius:20px;background:rgba(217,104,138,.14);color:#a8405f}
@@ -245,7 +245,7 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
   <div class="grid">
   <?php foreach ($projects as $i => $p): ?>
     <div class="card rv" onclick="openProj(<?= $i ?>)">
-      <div class="ico">💻</div>
+      <div class="ico"><?php if (!empty($p[6])): ?><img class="project-logo" src="<?= $h($url.'/images/'.rawurlencode($p[6])) ?>" alt="Logo <?= $h($p[0]) ?>"><?php else: ?>💻<?php endif; ?></div>
       <h3><?= $h($p[0]) ?></h3>
       <p style="color:var(--mu);font-size:.95rem;margin-bottom:12px"><?= $h($p[1]) ?></p>
       <div class="tags"><?php foreach ($p[2] as $t): ?><span class="tag"><?= $h($t) ?></span><?php endforeach; ?></div>
