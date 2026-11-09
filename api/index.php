@@ -71,6 +71,7 @@ $files = [
          ['Atelier 4', 'docs/M-202/Scrum Agile/Acheto_Etapes Atelier 4.pdf'],
          ['Atelier 5', 'docs/M-202/Scrum Agile/Atelier 5.pdf'],
          ['Atelier 6', 'https://atelier6-one.vercel.app/'],
+         ['Atelier 7', 'docs/M-202/Scrum Agile/Rapport_Atelier7_GitLab_SonarQube.pdf']
       ],
     ],
   ],
