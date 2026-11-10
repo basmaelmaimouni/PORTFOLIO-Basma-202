@@ -76,7 +76,9 @@ $files = [
     ],
   ],
 
-  'M203' => ['Atelier 1', 'docs/M-203/Atelier 1.pdf'],
+  'M203' => ['ateliers' => [
+    ['Atelier 1', 'docs/M-203/Rapport_Atelier_1.pdf'],
+  ]],
   'M204' => [],
   'M205' => [],
   'M206' => [],
