@@ -90,7 +90,7 @@ $files = [
 // ملفات المشاريع: 0 = Acheto ، 1 = Projet fin formation ، 2 = NOMAS
 $projectFiles = [
   0 => [
-     ['Rapport Acheto', 'https://acheto-6yzg7meac-norahamioui761-pixels-projects.vercel.app/'],
+     [' Acheto', 'https://acheto-6yzg7meac-norahamioui761-pixels-projects.vercel.app/'],
   ],
   1 => [
     // ['Rapport projet fin formation', 'docs/projets/projet-fin-formation/rapport.pdf'],
@@ -256,7 +256,7 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
       <h3><?= $h($p[0]) ?></h3>
       <p style="color:var(--mu);font-size:.95rem;margin-bottom:12px"><?= $h($p[1]) ?></p>
       <div class="tags"><?php foreach ($p[2] as $t): ?><span class="tag"><?= $h($t) ?></span><?php endforeach; ?></div>
-      <div class="cnt"><?= count($pfiles["P$i"]) ?> élément(s) · <a href="<?= $h($p[3]) ?>" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--a)"><?= $h($p[5] ?? 'GitHub ↗') ?></a></div>
+      <div class="cnt"><?= count($pfiles["P$i"]) ?> élément(s) · <a href="<?= $h($p[3]) ?>" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--a)"><?= $h($p[5] ?? 'Voir projet ↗') ?></a></div>
     </div>
   <?php endforeach; ?>
   </div>
