@@ -90,7 +90,7 @@ $files = [
 // ملفات المشاريع: 0 = Acheto ، 1 = Projet fin formation ، 2 = NOMAS
 $projectFiles = [
   0 => [
-    // ['Rapport Acheto', 'docs/projets/acheto/rapport.pdf'],
+     ['Rapport Acheto', 'https://acheto-6yzg7meac-norahamioui761-pixels-projects.vercel.app/'],
   ],
   1 => [
     // ['Rapport projet fin formation', 'docs/projets/projet-fin-formation/rapport.pdf'],
