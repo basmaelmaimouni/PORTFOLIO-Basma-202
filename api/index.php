@@ -80,6 +80,7 @@ $files = [
     'Ateliers' => [
       'ateliers' => [
         ['Atelier 1', 'docs/m-203/Rapport_Atelier_1.pdf'],
+        ['Atelier 2', 'docs/m-203/Rapport_Atelier_2.pdf'],
       ],
     ],
   ],
