@@ -96,7 +96,7 @@ $projectFiles = [
     // ['Rapport projet fin formation', 'docs/projets/projet-fin-formation/rapport.pdf'],
   ],
   2 => [
-    ['NOMAS — Nouvelle Maison du Sud', 'http://127.0.0.1:5500/NOMAS.html'],
+    ['NOMAS — Nouvelle Maison du Sud', 'https://travail-co.vercel.app/'],
   ],
 ];
 /* ================== من هنا لتحت ما تقيسش والو ================== */
