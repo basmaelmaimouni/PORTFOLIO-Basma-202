@@ -8,8 +8,8 @@ $me = [
   'typing'  => ['Développeuse Full Stack', 'Passionné par le Web', 'Créatif & Curieux'],
   'about'   => "Étudiante en 2ème année Développement Digital option Full Stack. J'aime transformer des idées en applications web modernes, propres et performantes. Ce portfolio regroupe mes ateliers, TDs et projets réalisés durant l'année.",
   'email'   => 'basmaelmaimouni6@gmail.com',
-  'github'  => 'https://github.com/karim',
-  'linkedin'=> 'https://linkedin.com/in/karim',
+  'github'  => 'https://github.com/basmaelmaimouni',
+  'linkedin'=> 'https://www.linkedin.com/in/basma-el-maimouni-b38a26395/',
   'photo'   => $url.'/images/'.rawurlencode('Basma.jpeg'),          // تصويرتك لفوق (Hero)
   'about_photo' => $url.'/images/'.rawurlencode('about basma.jpeg'),        // تصويرة About me
 ];
@@ -273,8 +273,8 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
   <p class="sub rv">Une idée, une opportunité ? Parlons-en !</p>
   <div class="soc rv">
     <a class="btn p" href="mailto:<?= $h($me['email']) ?>">✉️ Email</a>
-    <a class="btn" href="<?= $h($me['github']) ?>" target="_blank">GitHub</a>
-    <a class="btn" href="<?= $h($me['linkedin']) ?>" target="_blank">LinkedIn</a>
+    <a class="btn" href="<?= $h($me['github']) ?>" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a class="btn" href="<?= $h($me['linkedin']) ?>" target="_blank" rel="noopener noreferrer">LinkedIn</a>
   </div>
 </section>
 <footer>© <?= date('Y') ?> <?= $h($me['name']) ?> — Code today. Online tomorrow.</footer>
