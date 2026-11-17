@@ -85,6 +85,8 @@ $files = [
         ['Rapport Acheto', 'docs/m-203/Rapport_Acheto_Fonction_Procedure.pdf'],
         ['Atelier 4', 'docs/m-203/Rapport_Atelier_4.pdf'],
         ['Atelier 5', 'docs/m-203/Rapport_Atelier_5.pdf'],
+        ['Atelier 6', 'docs/m-203/Rapport_Atelier_6.pdf'],
+        ['Atelier 7', 'docs/m-203/Rapport_Atelier_7.pdf'],
         
       ],
     ],
