@@ -337,6 +337,13 @@ const CERTIFICATES = [
     issuer: 'Asana',
     date: 'Novembre 2026',
     verifyUrl: 'https://asana.com/fr/certifications?utm_source=linkedin&utm_medium=social&utm_campaign=cert25&utm_content=badge_social_share'
+  },
+  {
+    image: '/images/Professional%20completion%20certificate.png',
+    title: 'HTML Course Completion',
+    issuer: 'Simplilearn',
+    date: '13 janvier 2026',
+    verifyUrl: 'https://www.simplilearn.com/free-html-course-for-beginners-skillup'
   }
 ];
 const MODS=<?= json_encode($modules, JSON_UNESCAPED_UNICODE) ?>;
