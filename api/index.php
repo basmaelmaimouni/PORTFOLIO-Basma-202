@@ -332,7 +332,7 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
 <script>
 const CERTIFICATES = [
   {
-    image: '/images/AI%20Studio%20Foundations%20Skill%20Badge%20certificate.png',
+    image: '/images/Asana%20certificate.png',
     title: 'AI Studio Foundations Skill Badge',
     issuer: 'Asana',
     date: 'Novembre 2026',
