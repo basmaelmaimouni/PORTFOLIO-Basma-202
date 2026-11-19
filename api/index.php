@@ -344,6 +344,13 @@ const CERTIFICATES = [
     issuer: 'Simplilearn',
     date: '13 janvier 2026',
     verifyUrl: 'https://www.simplilearn.com/free-html-course-for-beginners-skillup'
+  },
+  {
+    image: '/images/Excel%20course%20completion%20certificate.png',
+    title: 'Microsoft Office Specialist: Excel Associate (Microsoft 365 Apps)',
+    issuer: 'Microsoft',
+    date: 'Juin 2026',
+    verifyUrl: 'https://learn.microsoft.com/en-us/credentials/certifications/mos-excel-associate-m365-apps/?practice-assessment-type=certification'
   }
 ];
 const MODS=<?= json_encode($modules, JSON_UNESCAPED_UNICODE) ?>;
