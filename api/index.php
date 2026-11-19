@@ -144,7 +144,9 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 @keyframes float{50%{transform:translate(60px,-50px) scale(1.15)}}
 nav{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 6%;backdrop-filter:blur(14px);background:rgba(128,66,110,.9);border-bottom:1px solid var(--bd);z-index:50}
 .logo{font-weight:800;font-size:1.3rem;background:var(--g);-webkit-background-clip:text;background-clip:text;color:transparent}
-nav a{color:var(--mu);text-decoration:none;margin-left:22px;font-size:.95rem;transition:.3s}
+nav .nav-links{display:flex;align-items:center;gap:22px;max-width:72vw;min-width:0;overflow-x:auto;scrollbar-width:none}
+nav .nav-links::-webkit-scrollbar{display:none}
+nav a{color:var(--mu);text-decoration:none;font-size:.95rem;transition:.3s;white-space:nowrap}
 nav a:hover{color:var(--a)}
 section{padding:100px 6% 40px;max-width:1200px;margin:auto}
 h2{font-size:2.1rem;margin-bottom:8px}
@@ -184,6 +186,24 @@ h2 span,.grad{background:var(--g);-webkit-background-clip:text;background-clip:t
 .tag{font-size:.75rem;padding:3px 10px;border-radius:20px;background:rgba(255,211,139,.2);color:var(--tx)}
 .cnt{margin-top:14px;font-size:.85rem;color:var(--mu)}
 .rv{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}.rv.on{opacity:1;transform:none}
+.certificate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:22px}
+.certificate-card{width:100%;padding:0;text-align:left;font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .3s}
+.certificate-card:hover,.certificate-card:focus-visible{transform:translateY(-4px);border-color:var(--a)}
+.certificate-card:focus-visible{outline:2px solid var(--b);outline-offset:3px}
+.certificate-card img{display:block;width:100%;aspect-ratio:1.55;object-fit:cover}
+.certificate-details{padding:18px}
+.certificate-details h3{margin-bottom:6px}
+.certificate-details p,.certificate-details time{color:var(--mu);font-size:.92rem}
+.certificate-lightbox{position:fixed;inset:0;z-index:110;display:none;place-items:center;padding:16px;background:rgba(82,45,96,.88);backdrop-filter:blur(8px)}
+.certificate-lightbox.open{display:grid}
+.certificate-lightbox-box{width:min(1100px,100%);max-height:94vh;overflow:auto;padding:20px;background:rgba(82,45,96,.98);border:1px solid var(--bd);border-radius:24px;animation:pop .35s}
+.certificate-lightbox-header,.certificate-lightbox-actions{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.certificate-lightbox-header h2{margin:0;font-size:1.5rem}
+.certificate-lightbox-image{display:block;max-width:100%;max-height:72vh;margin:16px auto;object-fit:contain;border-radius:12px}
+.certificate-lightbox-actions{flex-wrap:wrap}
+.certificate-lightbox-issuer{color:var(--mu)}
+.certificate-verify{display:inline-block;padding:9px 20px;border-radius:30px;text-decoration:none;font-weight:700;color:var(--c);background:var(--b);transition:transform .25s}
+.certificate-verify:hover{transform:translateY(-2px)}
 .contact{text-align:center}
 .soc{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:20px}
 footer{text-align:center;color:var(--mu);padding:40px 0;font-size:.9rem}
@@ -204,14 +224,14 @@ footer{text-align:center;color:var(--mu);padding:40px 0;font-size:.9rem}
 .file a.file-open{color:var(--c);background:var(--b);border:0}
 .empty{text-align:center;color:var(--mu);padding:30px}
 iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;margin-top:12px;background:#fff}
-@media(max-width:700px){nav a{margin-left:12px;font-size:.85rem}.nl{display:none}}
+@media(max-width:700px){nav{gap:12px}nav .nav-links{gap:14px;max-width:72vw}nav a{font-size:.85rem}.nl{display:none}.certificate-lightbox-box{padding:14px}.certificate-lightbox-header h2{font-size:1.2rem}}
 </style>
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 
 <nav><div class="logo">&lt;<?= $h(explode(' ',$me['name'])[0]) ?>/&gt;</div>
-<div><a href="#home" class="nl">Accueil</a><a href="#about">À propos</a><a href="#modules">Modules</a><a href="#projects">Projets</a><a href="#contact">Contact</a></div></nav>
+<div class="nav-links"><a href="#home" class="nl">Accueil</a><a href="#certificates">Certificats</a><a href="#about">À propos</a><a href="#modules">Modules</a><a href="#projects">Projets</a><a href="#contact">Contact</a></div></nav>
 
 <section id="home">
   <div class="hero-t rv">
@@ -221,6 +241,12 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
     <div class="btns"><a class="btn p" href="#modules">Voir mes modules</a><a class="btn" href="#projects">Mes projets</a></div>
   </div>
   <div class="ph rv"><div class="in"><?= $h(mb_strtoupper(mb_substr($me['name'],0,1))) ?><img src="<?= $h($me['photo']) ?>" alt="" onerror="this.remove()"></div></div>
+</section>
+
+<section id="certificates">
+  <h2 class="rv">Mes <span>Certificats</span></h2>
+  <p class="sub rv">Quelques certifications obtenues durant mon parcours.</p>
+  <div class="certificate-grid" id="certificateGrid"></div>
 </section>
 
 <section id="about">
@@ -280,6 +306,20 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
 </section>
 <footer>© <?= date('Y') ?> <?= $h($me['name']) ?> — Code today. Online tomorrow.</footer>
 
+<div class="certificate-lightbox" id="certificateLightbox" role="dialog" aria-modal="true" aria-labelledby="certificateLightboxTitle" onclick="if(event.target===this)closeCertificate()">
+  <div class="certificate-lightbox-box">
+    <div class="certificate-lightbox-header">
+      <h2 id="certificateLightboxTitle"></h2>
+      <button class="x" type="button" aria-label="Fermer le certificat" onclick="closeCertificate()">✕</button>
+    </div>
+    <img class="certificate-lightbox-image" id="certificateLightboxImage" alt="">
+    <div class="certificate-lightbox-actions">
+      <p class="certificate-lightbox-issuer" id="certificateLightboxIssuer"></p>
+      <a class="certificate-verify" id="certificateVerifyLink" href="#" target="_blank" rel="noopener noreferrer">Vérifier ↗</a>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="modal" onclick="if(event.target===this)closeM()">
   <div class="box">
     <div class="mh"><div><div class="mid" id="mid"></div><h2 id="mt" style="margin:0"></h2></div><button class="x" onclick="closeM()">✕</button></div>
@@ -290,6 +330,15 @@ iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;marg
 </div>
 
 <script>
+const CERTIFICATES = [
+  {
+    image: '/images/AI%20Studio%20Foundations%20Skill%20Badge%20certificate.png',
+    title: 'AI Studio Foundations Skill Badge',
+    issuer: 'Asana',
+    date: 'Novembre 2026',
+    verifyUrl: 'https://asana.com/fr/certifications?utm_source=linkedin&utm_medium=social&utm_campaign=cert25&utm_content=badge_social_share'
+  }
+];
 const MODS=<?= json_encode($modules, JSON_UNESCAPED_UNICODE) ?>;
 const DATA=<?= json_encode($data, JSON_UNESCAPED_UNICODE) ?>;
 const PROJ=<?= json_encode($projects, JSON_UNESCAPED_UNICODE) ?>;
@@ -298,9 +347,37 @@ const LAB={td:'📘 TD',ateliers:'🛠️ Ateliers',projets:'📁 Projets'};
 const $=id=>document.getElementById(id);
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let cur=null,part=0,ty=null;
+let certificateTrigger=null;
 
 function show(m){$('modal').classList.add('open');document.body.style.overflow='hidden';$('view').innerHTML=''}
 function closeM(){$('modal').classList.remove('open');document.body.style.overflow=''}
+function renderCertificates(){
+  $('certificateGrid').innerHTML=CERTIFICATES.map((certificate,index)=>`<article class="certificate-card rv" role="button" tabindex="0" data-certificate-index="${index}" aria-label="Afficher le certificat ${esc(certificate.title)}">
+    <img src="${esc(certificate.image)}" alt="Certificat : ${esc(certificate.title)}" loading="lazy">
+    <div class="certificate-details"><h3>${esc(certificate.title)}</h3><p>${esc(certificate.issuer)}</p><time>${esc(certificate.date)}</time></div>
+  </article>`).join('');
+  $('certificateGrid').querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.1+'s';io.observe(el)});
+}
+function openCertificate(index,trigger){
+  const certificate=CERTIFICATES[index];
+  if(!certificate)return;
+  certificateTrigger=trigger;
+  $('certificateLightboxTitle').textContent=certificate.title;
+  $('certificateLightboxImage').src=certificate.image;
+  $('certificateLightboxImage').alt=`Certificat : ${certificate.title}`;
+  $('certificateLightboxIssuer').textContent=`${certificate.issuer} · ${certificate.date}`;
+  $('certificateVerifyLink').href=certificate.verifyUrl;
+  $('certificateLightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+  $('certificateLightbox').querySelector('.x').focus();
+}
+function closeCertificate(){
+  const lightbox=$('certificateLightbox');
+  if(!lightbox.classList.contains('open'))return;
+  lightbox.classList.remove('open');
+  document.body.style.overflow='';
+  if(certificateTrigger){certificateTrigger.focus();certificateTrigger=null}
+}
 function openMod(id){
   cur=id;part=0;show();$('mid').textContent=id;$('mt').textContent=MODS[id][0];
   $('tabs').style.display='block';draw();
@@ -326,7 +403,7 @@ function render(f){
   $('list').innerHTML=f.length?f.map((x,i)=>`<div class="file" style="animation-delay:${i*.05}s"><span>📄 ${esc(x.name)}</span><div>${x.external?`<a class="file-open" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">Voir</a>`:`<button onclick="prev('${x.url}')">Voir</button><a href="${x.url}" download>Télécharger</a>`}</div></div>`).join(''):'<div class="empty">Aucun fichier pour le moment 📭</div>';
 }
 function prev(u){if(u.startsWith('https://')){window.open(u,'_blank','noopener,noreferrer');return}$('view').innerHTML=`<iframe src="${u}"></iframe>`;$('view').scrollIntoView({behavior:'smooth'})}
-document.addEventListener('keydown',e=>e.key==='Escape'&&closeM());
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCertificate();closeM()}});
 
 // typing
 const W=<?= json_encode($me['typing'], JSON_UNESCAPED_UNICODE) ?>;let wi=0,ci=0,del=false;
@@ -338,6 +415,9 @@ const W=<?= json_encode($me['typing'], JSON_UNESCAPED_UNICODE) ?>;let wi=0,ci=0,
 // reveal + counters
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.15});
 document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.1+'s';io.observe(el)});
+$('certificateGrid').addEventListener('click',e=>{const card=e.target.closest('.certificate-card');if(card)openCertificate(Number(card.dataset.certificateIndex),card)});
+$('certificateGrid').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.certificate-card')){e.preventDefault();openCertificate(Number(e.target.dataset.certificateIndex),e.target)}});
+renderCertificates();
 const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,n=+el.dataset.n;let v=0;
   const s=setInterval(()=>{v+=Math.max(1,Math.ceil(n/30));if(v>=n){v=n;clearInterval(s)}el.textContent=v},40);co.unobserve(el)}));
 document.querySelectorAll('[data-n]').forEach(el=>co.observe(el));
