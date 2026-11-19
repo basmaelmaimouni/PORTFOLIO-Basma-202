@@ -200,9 +200,8 @@ footer{text-align:center;color:var(--mu);padding:40px 0;font-size:.9rem}
 .file{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:var(--card);border:1px solid var(--bd);margin-bottom:10px;animation:pop .3s backwards}
 .file span{overflow:hidden;text-overflow:ellipsis}
 .file div{display:flex;gap:8px;flex:0 0 auto}
-.file a,.file button{font-size:.85rem;padding:6px 14px;border-radius:20px;text-decoration:none;color:#fff8ef;background:var(--c);border:0;cursor:pointer}
-.file a{color:var(--tx);background:transparent;border:1px solid var(--bd)}
-.file a.file-open{color:#fff8ef;background:var(--c);border:0}
+.file a,.file button{font-size:.85rem;padding:6px 14px;border-radius:20px;text-decoration:none;color:var(--c);background:var(--b);border:0;cursor:pointer}
+.file a.file-open{color:var(--c);background:var(--b);border:0}
 .empty{text-align:center;color:var(--mu);padding:30px}
 iframe{width:100%;height:60vh;border:1px solid var(--bd);border-radius:12px;margin-top:12px;background:#fff}
 @media(max-width:700px){nav a{margin-left:12px;font-size:.85rem}.nl{display:none}}
