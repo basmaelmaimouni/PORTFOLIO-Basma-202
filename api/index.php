@@ -87,6 +87,7 @@ $files = [
         ['Atelier 5', 'docs/m-203/SQL/Rapport_Atelier_5.pdf'],
         ['Atelier 6', 'docs/m-203/SQL/Rapport_Atelier_6.pdf'],
         ['Atelier 7', 'docs/m-203/SQL/Rapport_Atelier_7.pdf'],
+        ['Examen_FF_session_juin_2026', 'docs/m-203/SQL/Examen_FF_session_juin_2026_Basma_Elmaimouni.pdf'],
         
       ],
     ],
