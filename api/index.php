@@ -139,10 +139,10 @@ $h = fn($s) => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Portfolio — <?= $h($me['name']) ?></title>
 <style>
-:root{--bg:#F5F3EB;--card:rgba(255,255,255,.82);--bd:rgba(7,59,131,.18);--tx:#191A20;--mu:#073B83;--a:#1264C0;--b:#D6E83F;--c:#073B83;--accent-light:#56A9E8;--g:linear-gradient(135deg,var(--a),var(--accent-light))}
+:root{--bg:#F5F3EB;--page-bg:#7A90A4;--card:rgba(255,255,255,.82);--bd:rgba(7,59,131,.18);--tx:#191A20;--mu:#073B83;--a:#1264C0;--b:#D6E83F;--c:#073B83;--accent-light:#56A9E8;--g:linear-gradient(135deg,var(--a),var(--accent-light))}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;line-height:1.6}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--page-bg);color:var(--tx);overflow-x:hidden;line-height:1.6}
 .blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.18;z-index:-1;animation:float 18s ease-in-out infinite}
 .b1{width:420px;height:420px;background:var(--a);top:-100px;left:-100px}
 .b2{width:380px;height:380px;background:var(--b);bottom:-80px;right:-80px;animation-delay:-6s}
