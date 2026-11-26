@@ -225,7 +225,7 @@ footer{text-align:center;color:var(--mu);padding:40px 0;font-size:.9rem}
 .tab.on{background:var(--g);color:#fff;border:0}
 .parts,.tabs2{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.part{padding:10px 24px;border-radius:14px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;font-weight:700;font-size:1rem;transition:.25s}.part:hover{transform:translateY(-2px)}.part.on{background:var(--g);color:#fff;border:0}
 .file{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:var(--card);border:1px solid var(--bd);margin-bottom:10px;animation:pop .3s backwards}
-.file span{overflow:hidden;text-overflow:ellipsis}
+.file span{overflow:hidden;text-overflow:ellipsis;color:var(--c)}
 .file div{display:flex;gap:8px;flex:0 0 auto}
 .file a,.file button{font-size:.85rem;padding:6px 14px;border-radius:20px;text-decoration:none;color:var(--c);background:var(--b);border:0;cursor:pointer}
 .file a.file-open{color:var(--c);background:var(--b);border:0}
