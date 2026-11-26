@@ -93,6 +93,7 @@ $files = [
     ],
     'MongoDb' => [
       'ateliers' => [
+        ['Atelier 1', 'docs/m-203/MongoDb/rapport_atelier1_mongodb.pdf'],
         ],
       ],
   ],
