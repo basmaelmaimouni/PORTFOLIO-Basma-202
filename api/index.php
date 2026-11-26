@@ -11,7 +11,7 @@ $me = [
   'github'  => 'https://github.com/basmaelmaimouni',
   'linkedin'=> 'https://www.linkedin.com/in/basma-el-maimouni-b38a26395/',
   'photo'   => $url.'/images/'.rawurlencode('Basma.jpeg'),          // تصويرتك لفوق (Hero)
-  'about_photo' => $url.'/images/'.rawurlencode('about basma.jpeg'),        // تصويرة About me
+  'about_photo' => $url.'/images/'.rawurlencode('photo_2026-11-26_12-31-51.jpg'), // تصويرة About me
 ];
 // سميات المودولات (بدّلها بالسميات الحقيقية)
 $modules = [
